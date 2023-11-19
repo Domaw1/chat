@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import { ref, reactive } from "vue";
+import { ref } from "vue";
 import { VTextField, VResponsive } from "vuetify/lib/components/index.mjs";
 import { useRouter } from "vue-router";
 
