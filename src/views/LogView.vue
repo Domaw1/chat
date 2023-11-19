@@ -6,10 +6,10 @@
         <v-text-field
           label="Логин"
           hide-details="auto"
-          style="width: 300px;"
+          style="width: 300px"
         ></v-text-field>
       </v-responsive>
-      <button>Войти</button>
+      <button @click="$router.push({ name: 'chat' })">Войти</button>
     </div>
   </div>
 </template>
@@ -18,7 +18,7 @@
 import { VTextField, VResponsive } from "vuetify/lib/components/index.mjs";
 
 export default {
-  name: "HomeView",
+  name: "LogView",
   components: {
     VTextField,
     VResponsive,
@@ -27,6 +27,15 @@ export default {
 </script>
 
 <style scoped>
+* {
+  font-family: Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 .main {
   height: 100%;
   background-color: #ea526f;
