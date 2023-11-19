@@ -7,21 +7,44 @@
           label="Логин"
           hide-details="auto"
           style="width: 300px"
+          v-model="inputUsername"
         ></v-text-field>
       </v-responsive>
-      <button @click="$router.push({ name: 'chat' })">Войти</button>
+      <button @click="login">Войти</button>
     </div>
   </div>
 </template>
-
 <script>
+import { ref, reactive } from "vue";
 import { VTextField, VResponsive } from "vuetify/lib/components/index.mjs";
+import { useRouter } from "vue-router";
 
 export default {
   name: "LogView",
   components: {
     VTextField,
     VResponsive,
+  },
+
+  setup() {
+    const inputUsername = ref("");
+
+    const router = useRouter();
+
+    const login = () => {
+      if (inputUsername.value !== "") {
+        router.push({
+          name: "chat",
+          params: { username: inputUsername.value },
+        });
+        console.log("dd");
+      }
+    };
+
+    return {
+      inputUsername,
+      login,
+    };
   },
 };
 </script>

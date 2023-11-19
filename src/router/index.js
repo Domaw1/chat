@@ -9,7 +9,7 @@ const routes = [
     component: LogView
   },
   {
-    path: '/chat',
+    path: '/chat/:username',
     name: 'chat',
     component: ChatPage
   }
