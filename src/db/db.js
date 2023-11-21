@@ -1,5 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set, onValue, update } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  push,
+  set,
+  onValue,
+  update,
+} from "firebase/database";
 import firebase from "firebase/app";
 import "firebase/database";
 
@@ -17,19 +24,23 @@ const app = initializeApp(firebaseConfig);
 
 const db = getDatabase(app);
 
-export function writeUserData(username, messages) {
+export function listsUserData() {
   const db = getDatabase();
-  set(ref(db, "users/"), {
-    usernames: {
-      [username]: [...messages],
-    },
+  const postListRef = ref(db, "users");
+  const newPostRef = push(postListRef);
+  set(newPostRef, {
+    // ...
   });
 }
 
-export function updateUserData(username, messages) {
+export function updateUserData(username, user) {
   const db = getDatabase();
 
-  const postData = [...messages];
+  const postData = [{
+    username: user.username,
+    content: user.content,
+    time: user.time,
+  }];
 
   const updates = {};
   updates["users/" + username] = postData;
@@ -39,20 +50,21 @@ export function updateUserData(username, messages) {
 
 export function readUserData() {
   const db = getDatabase();
-  const users = {usersC: []};
+  const users = { usersC: [] };
   const starCountRef = ref(db, "users/");
   onValue(starCountRef, (snapshot) => {
     const data = snapshot.val();
     if (data !== null) {
       Object.keys(data).forEach((key) => {
         const currentKey = key;
-        for(let i = 0; i < data[currentKey].length; i++) {
+        for (let i = 0; i < data[currentKey].length; i++) {
           users.usersC.push({
             username: currentKey,
-            content: data[currentKey][i]
-          })
+            content: data[currentKey][i],
+          });
         }
       });
+      console.log(users.usersC);
     }
   });
   return users;

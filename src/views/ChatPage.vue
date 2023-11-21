@@ -12,6 +12,7 @@
       >
         <div class="username">{{ message.username }}</div>
         <div>{{ message.content }}</div>
+        <div>{{ message.time }}</div>
       </div>
     </div>
     <hr />
@@ -32,7 +33,7 @@
 import { VTextField, VBtn, VForm } from "vuetify/lib/components/index.mjs";
 import { ref, onMounted, reactive } from "vue";
 import { useRoute } from "vue-router";
-import { readUserData, updateUserData } from "@/db/db";
+import { readUserData, updateUserData, listsUserData } from "@/db/db";
 
 export default {
   name: "ChatPage",
@@ -46,7 +47,6 @@ export default {
     const messages = ref([]);
     const inputMessage = ref("");
     const route = useRoute();
-    const users = ref({});
 
     const state = reactive({
       username: "",
@@ -56,15 +56,30 @@ export default {
     const user = route.params.username;
 
     const sendMessage = () => {
+      const currentUser = state.messages.find((us) => us.username == user);
+      const time = new Date();
+      const hours = `${time.getHours()}:${time.getMinutes()}`;
       if (inputMessage.value !== "") {
         const message = inputMessage.value;
-        if (users.value[user]) {
-          users.value[user].push(message);
-          updateUserData(user, users.value[user]);
+        if (currentUser !== undefined) {
+          // users.value[user].push(message);
+          state.messages.push({
+            username: currentUser.username,
+            content: message,
+            time: hours
+          });
+          console.log(state.messages);
+          const idx = state.messages.indexOf(currentUser);
+          updateUserData(user, state.messages[idx]);
           inputMessage.value = "";
         } else {
-          users.value[user] = [...messages.value];
-          updateUserData(user, users.value[user]);
+          // updateUserData(user, users.value[user]);
+          state.messages.push({
+            username: user,
+            content: message,
+            time: hours
+          });
+          console.log("here");
           inputMessage.value = "";
         }
         // console.log(users.value[user]);
@@ -77,7 +92,6 @@ export default {
       let messages = [];
 
       Object.keys(data).forEach((key) => {
-        users.value[key] = data[key];
         messages.push({
           username: key,
           message: data[key],
@@ -90,7 +104,6 @@ export default {
       user,
       messages,
       inputMessage,
-      users,
       state,
       sendMessage,
     };
@@ -165,6 +178,7 @@ export default {
   background-color: aliceblue;
   width: 300px;
   height: 60px;
+  padding: 5px;
 }
 
 .hat > button {
