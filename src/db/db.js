@@ -1,11 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  getDatabase,
-  ref,
-  set,
-  onValue,
-  update,
-} from "firebase/database";
+import { getDatabase, ref, set, onValue, update } from "firebase/database";
 import firebase from "firebase/app";
 import "firebase/database";
 
@@ -45,14 +39,19 @@ export function updateUserData(username, messages) {
 
 export function readUserData() {
   const db = getDatabase();
-  const users = {};
+  const users = {usersC: []};
   const starCountRef = ref(db, "users/");
   onValue(starCountRef, (snapshot) => {
     const data = snapshot.val();
     if (data !== null) {
       Object.keys(data).forEach((key) => {
         const currentKey = key;
-        users[currentKey] = data[currentKey];
+        for(let i = 0; i < data[currentKey].length; i++) {
+          users.usersC.push({
+            username: currentKey,
+            content: data[currentKey][i]
+          })
+        }
       });
     }
   });

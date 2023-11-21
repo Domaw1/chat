@@ -11,16 +11,18 @@
         :class="message.username === user ? 'message' : 'friend-message'"
       >
         <div class="username">{{ message.username }}</div>
-        <div>{{ message.message }}</div>
+        <div>{{ message.content }}</div>
       </div>
     </div>
     <hr />
     <div class="footer">
       <v-form @submit.prevent class="form">
-        <v-text-field class="text" v-model="inputMessage"></v-text-field>
-        <v-btn type="submit" class="mt-2" height="45px" @click="sendMessage"
-          >Отправить</v-btn
-        >
+        <div class="send">
+          <input type="text" class="text" v-model="inputMessage" />
+          <button type="submit" height="45px" @click="sendMessage">
+            Отправить
+          </button>
+        </div>
       </v-form>
     </div>
   </div>
@@ -81,9 +83,7 @@ export default {
           message: data[key],
         });
       });
-
-      state.messages = messages;
-      console.log(state);
+      state.messages = messages[0].message;
     });
 
     return {
@@ -109,12 +109,35 @@ export default {
   box-sizing: border-box;
 }
 
+.send {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  width: 500px;
+  height: 70px;
+}
+
+.send > input {
+  width: 300px;
+  height: 40px;
+  box-shadow: 1px 10px 10px black;
+  margin-right: 8px;
+}
+
+.send > button {
+  height: 40px;
+  width: 100px;
+  box-shadow: 1px 10px 10px black;
+  border-radius: 8px;
+}
+
 .main {
-  height: 100%;
-  background-color: #ea526f;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #ea526f;
+  height: 100vh;
 }
 
 .hat {
@@ -128,7 +151,7 @@ export default {
 .footer {
   display: flex;
   flex-direction: row;
-  background-color: aliceblue;
+  background-color: #ea526f;
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -164,6 +187,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex: 1 1 100%;
+  min-height: 50vh;
   width: 500px;
   border-radius: 20px 20px 0px 0px;
 }

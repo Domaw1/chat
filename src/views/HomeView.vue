@@ -65,7 +65,7 @@ input {
   width: 250px;
   height: 30px;
   margin-bottom: 20px;
-  padding: 5px;
+  padding: 8px;
   border-radius: 7px;
   border: none;
   box-shadow: 1px 1px 6px black;
