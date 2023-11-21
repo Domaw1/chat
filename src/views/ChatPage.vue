@@ -48,7 +48,7 @@ export default {
 
     const state = reactive({
       username: "",
-      messages: []
+      messages: [],
     });
 
     const user = route.params.username;
@@ -78,14 +78,13 @@ export default {
         users.value[key] = data[key];
         messages.push({
           username: key,
-          message: data[key]
+          message: data[key],
         });
       });
 
       state.messages = messages;
       console.log(state);
     });
-    
 
     return {
       user,
