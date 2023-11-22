@@ -7,12 +7,12 @@
     <div class="chat">
       <div
         v-for="message in state.messages"
-        :key="message"
-        :class="message.username === user ? 'message' : 'friend-message'"
+        :key="message.key"
+        :class="message.data.username === user ? 'message' : 'friend-message'"
       >
-        <div class="username">{{ message.username }}</div>
-        <div>{{ message.content }}</div>
-        <div>{{ message.time }}</div>
+        <div class="username">{{ message.data.username }}</div>
+        <div>{{ message.data.content }}</div>
+        <div>{{ message.data.time }}</div>
       </div>
     </div>
     <hr />
@@ -31,9 +31,9 @@
 
 <script>
 import { VTextField, VBtn, VForm } from "vuetify/lib/components/index.mjs";
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
-import { readUserData, updateUserData, listsUserData } from "@/db/db";
+import { readUserData, updateUserData, addUser } from "@/db/db";
 
 export default {
   name: "ChatPage",
@@ -56,48 +56,32 @@ export default {
     const user = route.params.username;
 
     const sendMessage = () => {
-      const currentUser = state.messages.find((us) => us.username == user);
       const time = new Date();
       const hours = `${time.getHours()}:${time.getMinutes()}`;
+
       if (inputMessage.value !== "") {
         const message = inputMessage.value;
-        if (currentUser !== undefined) {
-          // users.value[user].push(message);
-          state.messages.push({
-            username: currentUser.username,
-            content: message,
-            time: hours
-          });
-          console.log(state.messages);
-          const idx = state.messages.indexOf(currentUser);
-          updateUserData(user, state.messages[idx]);
-          inputMessage.value = "";
-        } else {
-          // updateUserData(user, users.value[user]);
-          state.messages.push({
-            username: user,
-            content: message,
-            time: hours
-          });
-          console.log("here");
-          inputMessage.value = "";
+        const currentMessage = {
+          username: user,
+          content: message,
+          time: hours
         }
-        // console.log(users.value[user]);
+
+        addUser(currentMessage);
+        reloadState();
+        inputMessage.value = "";
       }
     };
 
-    onMounted(() => {
+    const reloadState = () => {
       const data = readUserData();
       state.username = user;
-      let messages = [];
+      state.messages = data;
+    };
 
-      Object.keys(data).forEach((key) => {
-        messages.push({
-          username: key,
-          message: data[key],
-        });
-      });
-      state.messages = messages[0].message;
+    onMounted(() => {
+      reloadState();
+      console.log(state.messages);
     });
 
     return {

@@ -33,38 +33,43 @@ export function listsUserData() {
   });
 }
 
-export function updateUserData(username, user) {
+export function addUser(user) {
   const db = getDatabase();
-
-  const postData = [{
+  const userData = ref(db, "users");
+  const newUserData = push(userData);
+  set(newUserData, {
     username: user.username,
     content: user.content,
     time: user.time,
-  }];
+  });
+}
+
+export function updateUserData(username, user) {
+  const db = getDatabase();
+
+  const postData = [
+    {
+      username: user.username,
+      content: user.content,
+      time: user.time,
+    },
+  ];
 
   const updates = {};
   updates["users/" + username] = postData;
-
   return update(ref(db), updates);
 }
 
 export function readUserData() {
   const db = getDatabase();
-  const users = { usersC: [] };
+  const users = [];
   const starCountRef = ref(db, "users/");
   onValue(starCountRef, (snapshot) => {
     const data = snapshot.val();
     if (data !== null) {
       Object.keys(data).forEach((key) => {
-        const currentKey = key;
-        for (let i = 0; i < data[currentKey].length; i++) {
-          users.usersC.push({
-            username: currentKey,
-            content: data[currentKey][i],
-          });
-        }
+        users.push({ key: key, data: data[key] });
       });
-      console.log(users.usersC);
     }
   });
   return users;
