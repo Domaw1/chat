@@ -1,12 +1,21 @@
 import { initializeApp } from "firebase/app";
+import { ref, onUnmounted } from "vue";
+
 import {
-  getDatabase,
-  ref,
-  push,
-  set,
-  onValue,
-  update,
-} from "firebase/database";
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  onSnapshot,
+  query,
+  getDoc,
+  setDoc,
+  arrayUnion,
+  updateDoc,
+  orderBy,
+  serverTimestamp,
+} from "firebase/firestore";
+
 import firebase from "firebase/app";
 import "firebase/database";
 
@@ -22,57 +31,63 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const db = getDatabase(app);
+const d = getFirestore(app);
 
-export function listsUserData() {
-  const db = getDatabase();
-  const postListRef = ref(db, "users");
-  const newPostRef = push(postListRef);
-  set(newPostRef, {
-    // ...
-  });
-}
-
-export function addUser(user) {
-  const db = getDatabase();
-  const userData = ref(db, "users");
-  const newUserData = push(userData);
-  set(newUserData, {
-    username: user.username,
-    content: user.content,
-    time: user.time,
-  });
-}
-
-export function updateUserData(username, user) {
-  const db = getDatabase();
-
-  const postData = [
-    {
-      username: user.username,
-      content: user.content,
-      time: user.time,
-    },
-  ];
-
-  const updates = {};
-  updates["users/" + username] = postData;
-  return update(ref(db), updates);
-}
-
-export function readUserData() {
-  const db = getDatabase();
+export async function getFirestoreData() {
   const users = [];
-  const starCountRef = ref(db, "users/");
-  onValue(starCountRef, (snapshot) => {
-    const data = snapshot.val();
-    if (data !== null) {
-      Object.keys(data).forEach((key) => {
-        users.push({ key: key, data: data[key] });
+
+  const querySnapshot = await getDocs(collection(d, "users"));
+  if (querySnapshot.docs.length > 0) {
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      users.push({
+        id: doc.id,
+        ...doc.data(),
       });
-    }
-  });
+    });
+  } else {
+    return;
+  }
   return users;
 }
 
-export default db;
+export function unsub() {
+  const users = ref([]);
+  const aa = ref([]);
+
+  const q = query(collection(d, "messages"));
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    users.value = snapshot.docs
+      .map((doc) => ({ ...doc.data().messages }))
+      .reverse();
+    aa.value = [];
+    Object.keys(users.value).forEach((key) => {
+      Object.keys(users.value[key]).forEach((value) => {
+        aa.value.push(users.value[key][value]);
+      });
+    });
+  });
+  onUnmounted(unsubscribe);
+  return { aa };
+}
+
+export async function firebaseTest(user) {
+  const d = getFirestore(app);
+  const usersRef = doc(d, "messages", "usersMessages");
+  const docSnap = await getDoc(usersRef);
+  const currentMessage = {
+    username: user.username,
+    content: user.content,
+    time: user.time,
+  };
+
+  if (docSnap.exists()) {
+    await updateDoc(usersRef, {
+      messages: arrayUnion(currentMessage),
+    });
+  } else {
+    await setDoc(usersRef, {
+      messages: arrayUnion(currentMessage),
+    });
+  }
+}

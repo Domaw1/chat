@@ -4,20 +4,22 @@
       <h1>Добро пожаловать, {{ user }}</h1>
       <button @click="$router.go(-1)">Выйти</button>
     </div>
-    <div class="chat">
+    <div class="chat" ref="scrollToMe">
       <div
-        v-for="message in state.messages"
-        :key="message.key"
-        :class="message.data.username === user ? 'message' : 'friend-message'"
+        v-for="message in aa"
+        :key="message.username"
+        :class="message.username === user ? 'message' : 'friend-message'"
       >
-        <div class="username">{{ message.data.username }}</div>
-        <div>{{ message.data.content }}</div>
-        <div>{{ message.data.time }}</div>
+        <div class="username">{{ message.username }}</div>
+        <div class="mes">
+          <div class="mes-content">{{ message.content }}</div>
+          <div class="time">{{ message.time }}</div>
+        </div>
       </div>
     </div>
     <hr />
     <div class="footer">
-      <v-form @submit.prevent class="form">
+      <v-form @submit.prevent>
         <div class="send">
           <input type="text" class="text" v-model="inputMessage" />
           <button type="submit" height="45px" @click="sendMessage">
@@ -31,9 +33,15 @@
 
 <script>
 import { VTextField, VBtn, VForm } from "vuetify/lib/components/index.mjs";
-import { ref, onMounted, reactive, watch } from "vue";
+import { ref, onMounted, reactive, watch, onUpdated } from "vue";
 import { useRoute } from "vue-router";
-import { readUserData, updateUserData, addUser } from "@/db/db";
+import {
+  readUserData,
+  addUser,
+  firebaseTest,
+  getFirestoreData,
+  unsub,
+} from "@/db/db";
 
 export default {
   name: "ChatPage",
@@ -44,16 +52,20 @@ export default {
   },
 
   setup() {
-    const messages = ref([]);
     const inputMessage = ref("");
     const route = useRoute();
-
-    const state = reactive({
-      username: "",
-      messages: [],
-    });
+    const { aa } = unsub();
 
     const user = route.params.username;
+    const scrollToMe = ref(null);
+
+    const scrollToBottom = () => {
+      if (scrollToMe.value) {
+        scrollToMe.value.scrollTop = scrollToMe.value.scrollHeight;
+      }
+    };
+
+    onUpdated(scrollToBottom);
 
     const sendMessage = () => {
       const time = new Date();
@@ -64,31 +76,28 @@ export default {
         const currentMessage = {
           username: user,
           content: message,
-          time: hours
-        }
+          time: hours,
+        };
 
-        addUser(currentMessage);
-        reloadState();
+        // addUser(currentMessage);
+        firebaseTest(currentMessage);
         inputMessage.value = "";
       }
     };
 
-    const reloadState = () => {
-      const data = readUserData();
-      state.username = user;
-      state.messages = data;
-    };
-
     onMounted(() => {
-      reloadState();
-      console.log(state.messages);
+      scrollToBottom();
+      getFirestoreData();
+      unsub();
+      
+      // checkChangesOnDb();
     });
 
     return {
       user,
-      messages,
       inputMessage,
-      state,
+      scrollToMe,
+      aa,
       sendMessage,
     };
   },
@@ -106,26 +115,49 @@ export default {
   box-sizing: border-box;
 }
 
+.mes {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.mes-content {
+  margin: 0 10px 10px 0;
+  font-size: 20px;
+}
+
+.time {
+  font-size: 15px;
+  align-self: flex-end;
+}
+
 .send {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #fff;
-  width: 500px;
+  min-width: 100%;
   height: 70px;
 }
 
 .send > input {
-  width: 300px;
+  width: 80%;
   height: 40px;
-  box-shadow: 1px 10px 10px black;
+  box-shadow: 1px 1px 10px black;
   margin-right: 8px;
+  border-radius: 8px;
+}
+
+@media screen and (width < 500px) {
+  .send > input {
+    width: 300px;
+  }
 }
 
 .send > button {
   height: 40px;
   width: 100px;
-  box-shadow: 1px 10px 10px black;
+  box-shadow: 1px 1px 10px black;
   border-radius: 8px;
 }
 
@@ -145,17 +177,9 @@ export default {
   margin-bottom: 20px;
 }
 
+.form,
 .footer {
-  display: flex;
-  flex-direction: row;
-  background-color: #ea526f;
   width: 100%;
-  justify-content: center;
-  align-items: center;
-}
-
-.form {
-  display: flex;
 }
 
 .text {
@@ -186,19 +210,22 @@ export default {
   flex-direction: column;
   flex: 1 1 100%;
   min-height: 50vh;
-  width: 500px;
+  width: 100%;
   border-radius: 20px 20px 0px 0px;
+  overflow-y: auto;
 }
 
 .message,
 .friend-message {
-  width: 200px;
   border: 1px solid black;
   margin: 5px;
   border-radius: 15px;
   padding: 5px;
   font-weight: 600;
-  margin-left: 20px;
+}
+
+.friend-message {
+  align-self: flex-start;
 }
 
 .message {
