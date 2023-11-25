@@ -15,6 +15,7 @@ import { signInUser } from "@/db/db";
 
 export default {
   name: "LogForm",
+  
   setup() {
     const inputEmail = ref("");
     const inputPassword = ref("");

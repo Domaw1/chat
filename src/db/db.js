@@ -4,7 +4,6 @@ import { ref, onUnmounted } from "vue";
 import {
   getFirestore,
   collection,
-  getDocs,
   doc,
   onSnapshot,
   query,
@@ -19,6 +18,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 
 import "firebase/database";
@@ -38,52 +38,31 @@ const app = initializeApp(firebaseConfig);
 const d = getFirestore(app);
 const auth = getAuth(app);
 
-export async function createNewUser(email, password) {
+export async function createNewUser(email, password, username) {
   const auth = getAuth();
   const create = await createUserWithEmailAndPassword(auth, email, password);
+  updateProfile(auth.currentUser, {
+    displayName: username,
+    photoURL: "https://example.com/jane-q-user/profile.jpg",
+  })
+    .then(() => {
+      // Profile updated!
+      // ...
+      console.log("updated!");
+    })
+    .catch((error) => {
+      // An error occurred
+      // ...
+    });
+
   return create;
 }
 
 export async function signInUser(email, password) {
   const auth = getAuth();
   const getSignIn = await signInWithEmailAndPassword(auth, email, password);
+
   return getSignIn;
-}
-
-export function getCurrentUser() {
-  const auth = getAuth();
-  const currentUser = "";
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      // User is signed in, see docs for a list of available properties
-      // https://firebase.google.com/docs/reference/js/auth.user
-      const uid = user.uid;
-      console.log(user.email);
-      // ...
-    } else {
-      // User is signed out
-      // ...
-    }
-  });
-  return currentUser;
-}
-
-export async function getFirestoreData() {
-  const users = [];
-
-  const querySnapshot = await getDocs(collection(d, "users"));
-  if (querySnapshot.docs.length > 0) {
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      users.push({
-        id: doc.id,
-        ...doc.data(),
-      });
-    });
-  } else {
-    return;
-  }
-  return users;
 }
 
 export function unsub() {
@@ -125,4 +104,12 @@ export async function sendMessageToFirestore(user) {
       messages: arrayUnion(currentMessage),
     });
   }
+}
+
+export function getCurrentUser() {
+  const auth = getAuth();
+  const currentUser = {};
+  const user = auth.currentUser;
+
+  return user;
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="log-form">
     <h1>Регистрация</h1>
+    <input type="text" placeholder="Ваше имя..." v-model="inputUsername" />
     <input type="text" placeholder="Ваша почта..." v-model="inputEmail" />
     <input type="text" placeholder="Ваш пароль..." v-model="inputPassword" />
     <button @click="reg" class="reg-btn">Зарегистрироваться</button>
@@ -20,14 +21,16 @@ export default {
   setup() {
     const inputEmail = ref("");
     const inputPassword = ref("");
+    const inputUsername = ref("");
     const router = useRouter();
 
     const reg = () => {
       const user = {
+        username: inputUsername.value,
         email: inputEmail.value,
         password: inputPassword.value,
       };
-      const u = createNewUser(user.email, user.password);
+      const u = createNewUser(user.email, user.password, user.username);
       u.then(() => {
         alert("Успешно! Авторизуйтесь.");
         router.push({
@@ -51,6 +54,7 @@ export default {
     return {
       inputPassword,
       inputEmail,
+      inputUsername,
       reg,
       openLogPage,
     };

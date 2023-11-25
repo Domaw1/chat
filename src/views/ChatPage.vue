@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="hat">
-      <h1>Добро пожаловать, {{ currentUserMail }}</h1>
+      <h1 @click="openProfile(currentUserMail)">Добро пожаловать, {{ currentUserMail }}</h1>
       <button @click="$router.go(-1)">Выйти</button>
     </div>
     <chat-window :messages="aa" :currentUserMail="currentUserMail"/>
@@ -13,8 +13,8 @@
 <script>
 import { VTextField } from "vuetify/lib/components/index.mjs";
 import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { getFirestoreData, unsub } from "@/db/db";
+import { useRoute, useRouter } from "vue-router";
+import { unsub, getCurrentUser } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
@@ -31,11 +31,20 @@ export default {
   setup() {
     const inputMessage = ref("");
     const route = useRoute();
+    const router = useRouter();
     const { aa } = unsub();
     const currentUserMail = route.params.email;
 
+    const openProfile = (userEmail) => {
+      router.push({
+        name: 'profile',
+        params: {
+          email: userEmail
+        }
+      })
+    }
+
     onMounted(() => {
-      getFirestoreData();
       unsub();
       // checkChangesOnDb();
     });
@@ -44,6 +53,7 @@ export default {
       inputMessage,
       aa,
       currentUserMail,
+      openProfile
     };
   },
 };
@@ -94,5 +104,9 @@ export default {
 h1 {
   align-self: flex-end;
   margin-left: 5px;
+}
+
+h1:hover {
+  cursor: pointer;
 }
 </style>
