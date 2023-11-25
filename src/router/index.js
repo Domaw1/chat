@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import ChatPage from '../views/ChatPage.vue';
+import RegPage from '../views/RegPage.vue';
 
 const routes = [
   {
@@ -9,10 +10,15 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/chat/:username',
+    path: '/chat/:email',
     name: 'chat',
     component: ChatPage
-  }
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: RegPage
+  },
 ]
 
 const router = createRouter({

@@ -1,16 +1,21 @@
 <template>
   <div class="main">
     <div class="hat">
-      <h1>Добро пожаловать, {{ user }}</h1>
+      <h1>Добро пожаловать, {{ currentUserMail }}</h1>
       <button @click="$router.go(-1)">Выйти</button>
     </div>
     <div class="chat" ref="scrollToMe">
+      <div v-if="!aa.length" class="spinner">
+        <v-progress-circular indeterminate :size="75" color="red"></v-progress-circular>
+      </div>
       <div
         v-for="message in aa"
-        :key="message.username"
-        :class="message.username === user ? 'message' : 'friend-message'"
+        :key="message.email"
+        :class="
+          message.email === currentUserMail ? 'message' : 'friend-message'
+        "
       >
-        <div class="username">{{ message.username }}</div>
+        <div class="username">{{ message.email }}</div>
         <div class="mes">
           <div class="mes-content">{{ message.content }}</div>
           <div class="time">{{ message.time }}</div>
@@ -35,28 +40,22 @@
 import { VTextField, VBtn, VForm } from "vuetify/lib/components/index.mjs";
 import { ref, onMounted, reactive, watch, onUpdated } from "vue";
 import { useRoute } from "vue-router";
-import {
-  readUserData,
-  addUser,
-  firebaseTest,
-  getFirestoreData,
-  unsub,
-} from "@/db/db";
+import { sendMessageToFirestore, getFirestoreData, unsub } from "@/db/db";
+import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 
 export default {
   name: "ChatPage",
   components: {
     VTextField,
-    VBtn,
-    VForm,
+    VProgressCircular
   },
 
   setup() {
     const inputMessage = ref("");
     const route = useRoute();
     const { aa } = unsub();
+    const currentUserMail = route.params.email;
 
-    const user = route.params.username;
     const scrollToMe = ref(null);
 
     const scrollToBottom = () => {
@@ -74,13 +73,13 @@ export default {
       if (inputMessage.value !== "") {
         const message = inputMessage.value;
         const currentMessage = {
-          username: user,
+          email: currentUserMail,
           content: message,
           time: hours,
         };
 
         // addUser(currentMessage);
-        firebaseTest(currentMessage);
+        sendMessageToFirestore(currentMessage);
         inputMessage.value = "";
       }
     };
@@ -89,15 +88,14 @@ export default {
       scrollToBottom();
       getFirestoreData();
       unsub();
-      
       // checkChangesOnDb();
     });
 
     return {
-      user,
       inputMessage,
       scrollToMe,
       aa,
+      currentUserMail,
       sendMessage,
     };
   },
@@ -242,5 +240,12 @@ export default {
 h1 {
   align-self: flex-end;
   margin-left: 5px;
+}
+
+.spinner {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  align-items: center;
 }
 </style>

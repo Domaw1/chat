@@ -12,11 +12,15 @@ import {
   setDoc,
   arrayUnion,
   updateDoc,
-  orderBy,
-  serverTimestamp,
 } from "firebase/firestore";
 
-import firebase from "firebase/app";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+} from "firebase/auth";
+
 import "firebase/database";
 
 const firebaseConfig = {
@@ -32,6 +36,37 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const d = getFirestore(app);
+const auth = getAuth(app);
+
+export async function createNewUser(email, password) {
+  const auth = getAuth();
+  const create = await createUserWithEmailAndPassword(auth, email, password);
+  return create;
+}
+
+export async function signInUser(email, password) {
+  const auth = getAuth();
+  const getSignIn = await signInWithEmailAndPassword(auth, email, password);
+  return getSignIn;
+}
+
+export function getCurrentUser() {
+  const auth = getAuth();
+  const currentUser = "";
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed in, see docs for a list of available properties
+      // https://firebase.google.com/docs/reference/js/auth.user
+      const uid = user.uid;
+      console.log(user.email);
+      // ...
+    } else {
+      // User is signed out
+      // ...
+    }
+  });
+  return currentUser;
+}
 
 export async function getFirestoreData() {
   const users = [];
@@ -71,12 +106,12 @@ export function unsub() {
   return { aa };
 }
 
-export async function firebaseTest(user) {
+export async function sendMessageToFirestore(user) {
   const d = getFirestore(app);
   const usersRef = doc(d, "messages", "usersMessages");
   const docSnap = await getDoc(usersRef);
   const currentMessage = {
-    username: user.username,
+    email: user.email,
     content: user.content,
     time: user.time,
   };
