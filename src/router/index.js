@@ -11,7 +11,7 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/chat/:email',
+    path: '/chat/',
     name: 'chat',
     component: ChatPage
   },
@@ -21,7 +21,7 @@ const routes = [
     component: RegPage
   },
   {
-    path: '/profile/:email',
+    path: '/profile/:name',
     name: 'profile',
     component: UserProfile
   }

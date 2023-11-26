@@ -1,22 +1,25 @@
 <template>
   <div>
-    {{ currentUser }}
+    {{ userName }}
+    <img :src="userName.photoURL" alt="" />
   </div>
 </template>
 
 <script>
+import { useUserStore } from '@/store/user';
 import { useRoute } from 'vue-router';
-import { getCurrentUser } from '@/db/db';
 
 export default {
     name: 'UserProfile',
 
     setup() {
         const route = useRoute();
-        const currentUser = route.params.email;
-        console.log(getCurrentUser());
+        const currentUser = route.params.name;
+        const store = useUserStore();
+        const { userName } = store;
+
         return {
-            currentUser,
+            currentUser, userName
         }
     }
 }

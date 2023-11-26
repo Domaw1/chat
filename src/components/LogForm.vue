@@ -2,7 +2,7 @@
   <div class="log-form">
     <h1>Авторизация</h1>
     <input type="text" placeholder="Ваша почта..." v-model="inputEmail" />
-    <input type="text" placeholder="Ваш пароль..." v-model="inputPassword" />
+    <input type="text" @keydown.enter="login" placeholder="Ваш пароль..." v-model="inputPassword" />
     <button @click="login" class="log-btn">Войти</button>
     <button @click="openRegPage" class="reg-btn">Зарегистрироваться...</button>
   </div>
@@ -12,6 +12,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { signInUser } from "@/db/db";
+import { useUserStore } from "@/store/user";
 
 export default {
   name: "LogForm",
@@ -20,6 +21,7 @@ export default {
     const inputEmail = ref("");
     const inputPassword = ref("");
     const router = useRouter();
+    const store = useUserStore();
 
     const login = () => {
       const userToSign = {
@@ -31,10 +33,10 @@ export default {
         alert("Успешно! Добро пожаловать!");
         router.push({
           name: "chat",
-          params: {
-            email: newUser.user.email,
-          },
         });
+        // setUsername(newUser.displayName);
+        store.userName = newUser.user;
+
         inputEmail.value = "";
         inputPassword.value = "";
       }).catch((error) => {

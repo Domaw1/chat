@@ -10,9 +10,9 @@
     <div
       v-for="message in messages"
       :key="message.email"
-      :class="message.email === currentUserMail ? 'message' : 'friend-message'"
+      :class="message.displayName === currentUsername ? 'message' : 'friend-message'"
     >
-      <div class="username">{{ message.email }}</div>
+      <div class="username">{{ message.displayName }}</div>
       <div class="mes">
         <div class="mes-content">{{ message.content }}</div>
         <div class="time">{{ message.time }}</div>
@@ -34,7 +34,7 @@ export default {
       default: [],
     },
 
-    currentUserMail: {
+    currentUsername: {
         type: String,
         required: true,
     }

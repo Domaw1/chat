@@ -17,7 +17,6 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
 
@@ -43,7 +42,7 @@ export async function createNewUser(email, password, username) {
   const create = await createUserWithEmailAndPassword(auth, email, password);
   updateProfile(auth.currentUser, {
     displayName: username,
-    photoURL: "https://example.com/jane-q-user/profile.jpg",
+    photoURL: "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
   })
     .then(() => {
       // Profile updated!
@@ -65,24 +64,25 @@ export async function signInUser(email, password) {
   return getSignIn;
 }
 
-export function unsub() {
+export function getMessages() {
   const users = ref([]);
-  const aa = ref([]);
+  const usersName = ref([]);
 
   const q = query(collection(d, "messages"));
   const unsubscribe = onSnapshot(q, (snapshot) => {
     users.value = snapshot.docs
       .map((doc) => ({ ...doc.data().messages }))
       .reverse();
-    aa.value = [];
+    usersName.value = [];
     Object.keys(users.value).forEach((key) => {
       Object.keys(users.value[key]).forEach((value) => {
-        aa.value.push(users.value[key][value]);
+        usersName.value.push(users.value[key][value]);
       });
     });
   });
   onUnmounted(unsubscribe);
-  return { aa };
+
+  return { usersName };
 }
 
 export async function sendMessageToFirestore(user) {
@@ -90,7 +90,7 @@ export async function sendMessageToFirestore(user) {
   const usersRef = doc(d, "messages", "usersMessages");
   const docSnap = await getDoc(usersRef);
   const currentMessage = {
-    email: user.email,
+    displayName: user.displayName,
     content: user.content,
     time: user.time,
   };
@@ -104,12 +104,4 @@ export async function sendMessageToFirestore(user) {
       messages: arrayUnion(currentMessage),
     });
   }
-}
-
-export function getCurrentUser() {
-  const auth = getAuth();
-  const currentUser = {};
-  const user = auth.currentUser;
-
-  return user;
 }

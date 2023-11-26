@@ -1,21 +1,25 @@
 <template>
   <div class="main">
     <div class="hat">
-      <h1 @click="openProfile(currentUserMail)">Добро пожаловать, {{ currentUserMail }}</h1>
+      <h1 @click="openProfile(user.displayName)">
+        Добро пожаловать, {{ user.displayName }}
+      </h1>
       <button @click="$router.go(-1)">Выйти</button>
     </div>
-    <chat-window :messages="aa" :currentUserMail="currentUserMail"/>
+    <chat-window :messages="usersName" :currentUsername="user.displayName" />
     <hr />
-    <send-message-form :currentUserMail="currentUserMail"/>
+    <send-message-form :displayName="user.displayName" />
   </div>
 </template>
 
 <script>
 import { VTextField } from "vuetify/lib/components/index.mjs";
 import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { unsub, getCurrentUser } from "@/db/db";
+import { useRouter } from "vue-router";
+import { getMessages } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
+import { useUserStore } from "@/store/user";
+import { storeToRefs } from "pinia";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
 
@@ -30,30 +34,28 @@ export default {
 
   setup() {
     const inputMessage = ref("");
-    const route = useRoute();
     const router = useRouter();
-    const { aa } = unsub();
-    const currentUserMail = route.params.email;
+    const { usersName } = getMessages();
+    const store = useUserStore();
+    const { userName } = storeToRefs(store);
 
-    const openProfile = (userEmail) => {
+    const user = userName;
+
+    const openProfile = (username) => {
       router.push({
-        name: 'profile',
+        name: "profile",
         params: {
-          email: userEmail
-        }
-      })
-    }
-
-    onMounted(() => {
-      unsub();
-      // checkChangesOnDb();
-    });
+          name: username,
+        },
+      });
+    };
 
     return {
       inputMessage,
-      aa,
-      currentUserMail,
-      openProfile
+      usersName,
+      user,
+      store,
+      openProfile,
     };
   },
 };

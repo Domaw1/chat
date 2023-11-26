@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <log-form></log-form>
+    <log-form />
   </div>
 </template>
 

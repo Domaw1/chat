@@ -14,6 +14,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { createNewUser } from "@/db/db";
 
+
 export default {
   name: "RegForm",
   components: {},
@@ -30,6 +31,7 @@ export default {
         email: inputEmail.value,
         password: inputPassword.value,
       };
+
       const u = createNewUser(user.email, user.password, user.username);
       u.then(() => {
         alert("Успешно! Авторизуйтесь.");

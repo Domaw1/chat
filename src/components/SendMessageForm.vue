@@ -23,21 +23,22 @@ export default {
   },
 
   props: {
-    currentUserMail: {
+    displayName: {
         type: String,
     }
   },
 
   setup(props) {
     const inputMessage = ref("");
+
     const sendMessage = () => {
       const time = new Date();
       const hours = `${time.getHours()}:${time.getMinutes()}`;
-
+      
       if (inputMessage.value !== "") {
         const message = inputMessage.value;
         const currentMessage = {
-          email: props.currentUserMail,
+          displayName: props.displayName,
           content: message,
           time: hours,
         };
@@ -76,9 +77,9 @@ export default {
   border-radius: 8px;
 }
 
-@media screen and (width < 500px) {
+@media screen and (width < 600px) {
   .send > input {
-    width: 300px;
+    width: 250px;
   }
 }
 
