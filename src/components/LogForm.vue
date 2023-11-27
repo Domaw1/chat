@@ -41,8 +41,6 @@ export default {
         });
         // setUsername(newUser.displayName);
         store.userName = newUser.user;
-        localStorage.setItem(`${newUser.user.displayName}`, JSON.stringify(newUser.user));
-
         inputEmail.value = "";
         inputPassword.value = "";
       }).catch((error) => {

@@ -1,14 +1,14 @@
 <template>
   <div class="main">
     <div class="hat">
-      <h1 @click="openProfile(user)">
-        Добро пожаловать, {{ user }}
+      <h1 @click="openProfile(us.displayName)">
+        Добро пожаловать, {{ us.displayName }}
       </h1>
-      <button @click="$router.go(-1)">Выйти</button>
+      <button @click="signOut">Выйти</button>
     </div>
-    <chat-window :messages="usersName" :currentUsername="user" />
+    <chat-window :messages="usersName" :currentUsername="us.displayName" />
     <hr />
-    <send-message-form :displayName="user" />
+    <send-message-form :displayName="us.displayName" />
   </div>
 </template>
 
@@ -16,10 +16,8 @@
 import { VTextField } from "vuetify/lib/components/index.mjs";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getMessages, getCurrentUser } from "@/db/db";
+import { getMessages, getCurrentUser, signOutUser } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
-import { useUserStore } from "@/store/user";
-import { storeToRefs } from "pinia";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
 
@@ -36,8 +34,15 @@ export default {
     const inputMessage = ref("");
     const router = useRouter();
     const { usersName } = getMessages();
-    const store = useUserStore();
-    const user = store.userName.displayName;
+    const us = ref("");
+    // const us = getCurrentUser();
+
+    const signOut = () => {
+      signOutUser();
+      router.push({
+        name: "home",
+      });
+    };
 
     const openProfile = (username) => {
       router.push({
@@ -48,12 +53,22 @@ export default {
       });
     };
 
+    onMounted(() => {
+      getCurrentUser().then((user) => {
+        us.value = user;
+      }).catch(() => {
+        router.push({
+          name: 'home'
+        });
+      });
+    });
+
     return {
       inputMessage,
       usersName,
-      user,
-      store,
+      us,
       openProfile,
+      signOut,
     };
   },
 };
