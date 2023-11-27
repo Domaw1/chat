@@ -18,11 +18,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
-  browserSessionPersistence,
   setPersistence,
-  inMemoryPersistence,
-  onAuthStateChanged,
   browserLocalPersistence,
+  updateEmail,
+  updatePhoneNumber,
 } from "firebase/auth";
 
 import "firebase/database";
@@ -65,18 +64,11 @@ export async function createNewUser(email, password, username) {
 
 export async function signInUser(email, password) {
   const auth = getAuth();
-  // const getSignIn = await signInWithEmailAndPassword(auth, email, password);
   const getSignIn = setPersistence(auth, browserLocalPersistence)
     .then(() => {
-      // Existing and future Auth states are now persisted in the current
-      // session only. Closing the window would clear any existing state even
-      // if a user forgets to sign out.
-      // ...
-      // New sign-in will be persisted with session persistence.
       return signInWithEmailAndPassword(auth, email, password);
     })
     .catch((error) => {
-      // Handle Errors here.
       const errorCode = error.code;
       const errorMessage = error.message;
     });
@@ -131,11 +123,9 @@ export function getCurrentUser() {
     const auth = getAuth();
     auth.onAuthStateChanged((user) => {
       if (user) {
-        // User is signed in
         resolve(user);
       } else {
-        // User is signed out
-        reject(new Error('User is signed out'));
+        reject(new Error("User is signed out"));
       }
     });
   });
@@ -144,4 +134,28 @@ export function getCurrentUser() {
 export function signOutUser() {
   const auth = getAuth();
   auth.signOut();
+}
+
+export function updateUser(user, name, email, phone) {
+  const auth = getAuth();
+  if (name) {
+    updateProfile(user, {
+      displayName: name,
+    })
+      .then(() => {
+        console.log("updated name!");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }
+  if (email) {
+    updateEmail(user, email)
+      .then(() => {
+        console.log("updated email");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }
 }

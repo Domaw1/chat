@@ -35,7 +35,6 @@ export default {
     const router = useRouter();
     const { usersName } = getMessages();
     const us = ref("");
-    // const us = getCurrentUser();
 
     const signOut = () => {
       signOutUser();

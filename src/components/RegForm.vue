@@ -4,7 +4,7 @@
     <input type="text" placeholder="Ваше имя..." v-model="inputUsername" />
     <input type="text" placeholder="Ваша почта..." v-model="inputEmail" />
     <input type="text" placeholder="Ваш пароль..." v-model="inputPassword" />
-    <button @click="reg" class="reg-btn">Зарегистрироваться</button>
+    <my-button @click="reg">Зарегистрироваться</my-button>
     <button class="log-btn" @click="openLogPage">Войти...</button>
   </div>
 </template>
@@ -13,11 +13,11 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { createNewUser } from "@/db/db";
-
+import MyButton from "./UI/MyButton.vue";
 
 export default {
   name: "RegForm",
-  components: {},
+  components: { MyButton },
 
   setup() {
     const inputEmail = ref("");

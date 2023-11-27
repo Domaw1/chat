@@ -5,13 +5,29 @@
 </template>
 
 <script>
-
+import { getCurrentUser } from "@/db/db";
 import LogForm from "@/components/LogForm.vue";
+import { onMounted } from "vue";
+import router from "@/router";
 
 export default {
   name: "HomeView",
   components: {
     LogForm,
+  },
+
+  setup() {
+    onMounted(() => {
+      getCurrentUser()
+        .then(() => {
+          router.push({
+            name: "chat"
+          })
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    });
   },
 };
 </script>
@@ -24,5 +40,4 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 </style>

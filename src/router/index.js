@@ -11,7 +11,7 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/chat/',
+    path: '/chat',
     name: 'chat',
     component: ChatPage
   },

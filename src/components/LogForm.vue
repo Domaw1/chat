@@ -8,7 +8,7 @@
       placeholder="Ваш пароль..."
       v-model="inputPassword"
     />
-    <button @click="login" class="log-btn">Войти</button>
+    <my-button @click="login">Войти</my-button>
     <button @click="openRegPage" class="reg-btn">Зарегистрироваться...</button>
   </div>
 </template>
@@ -18,9 +18,13 @@ import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { signInUser } from "@/db/db";
 import { useUserStore } from "@/store/user";
+import MyButton from "./UI/MyButton.vue";
 
 export default {
   name: "LogForm",
+  components: {
+    MyButton
+  },
 
   setup() {
     const inputEmail = ref("");
@@ -101,16 +105,5 @@ input {
   border-radius: 7px;
   border: none;
   box-shadow: 1px 1px 6px black;
-}
-
-.log-btn {
-  width: 250px;
-  height: 35px;
-  font-size: 20px;
-  box-shadow: 1px 1px 6px black;
-  border: none;
-  background-color: #ea526f;
-  color: aliceblue;
-  border-radius: 7px;
 }
 </style>
