@@ -47,11 +47,10 @@ export default {
     };
 
     const changeProfile = (propertiesToUpdate) => {
-      // console.log(propertiesToUpdate.value);
       updateUser(
         currentUser.value,
         propertiesToUpdate.value.name,
-        propertiesToUpdate.value.email,
+        propertiesToUpdate.value.email
       );
     };
 
