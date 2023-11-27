@@ -1,14 +1,14 @@
 <template>
   <div class="main">
     <div class="hat">
-      <h1 @click="openProfile(user.displayName)">
-        Добро пожаловать, {{ user.displayName }}
+      <h1 @click="openProfile(user)">
+        Добро пожаловать, {{ user }}
       </h1>
       <button @click="$router.go(-1)">Выйти</button>
     </div>
-    <chat-window :messages="usersName" :currentUsername="user.displayName" />
+    <chat-window :messages="usersName" :currentUsername="user" />
     <hr />
-    <send-message-form :displayName="user.displayName" />
+    <send-message-form :displayName="user" />
   </div>
 </template>
 
@@ -16,7 +16,7 @@
 import { VTextField } from "vuetify/lib/components/index.mjs";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import { getMessages } from "@/db/db";
+import { getMessages, getCurrentUser } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import { useUserStore } from "@/store/user";
 import { storeToRefs } from "pinia";
@@ -37,9 +37,7 @@ export default {
     const router = useRouter();
     const { usersName } = getMessages();
     const store = useUserStore();
-    const { userName } = storeToRefs(store);
-
-    const user = userName;
+    const user = store.userName.displayName;
 
     const openProfile = (username) => {
       router.push({

@@ -1,7 +1,7 @@
 <template>
   <div>
     {{ userName }}
-    <img :src="userName.photoURL" alt="" />
+    <img :src="userName.photoURL" alt="userPic" />
   </div>
 </template>
 

@@ -42,7 +42,8 @@ export async function createNewUser(email, password, username) {
   const create = await createUserWithEmailAndPassword(auth, email, password);
   updateProfile(auth.currentUser, {
     displayName: username,
-    photoURL: "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+    photoURL:
+      "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
   })
     .then(() => {
       // Profile updated!
@@ -104,4 +105,8 @@ export async function sendMessageToFirestore(user) {
       messages: arrayUnion(currentMessage),
     });
   }
+}
+
+export function getCurrentUser() {
+  
 }

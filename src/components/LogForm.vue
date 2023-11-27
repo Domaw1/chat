@@ -2,21 +2,26 @@
   <div class="log-form">
     <h1>Авторизация</h1>
     <input type="text" placeholder="Ваша почта..." v-model="inputEmail" />
-    <input type="text" @keydown.enter="login" placeholder="Ваш пароль..." v-model="inputPassword" />
+    <input
+      type="text"
+      @keydown.enter="login"
+      placeholder="Ваш пароль..."
+      v-model="inputPassword"
+    />
     <button @click="login" class="log-btn">Войти</button>
     <button @click="openRegPage" class="reg-btn">Зарегистрироваться...</button>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { signInUser } from "@/db/db";
 import { useUserStore } from "@/store/user";
 
 export default {
   name: "LogForm",
-  
+
   setup() {
     const inputEmail = ref("");
     const inputPassword = ref("");
@@ -36,6 +41,7 @@ export default {
         });
         // setUsername(newUser.displayName);
         store.userName = newUser.user;
+        localStorage.setItem(`${newUser.user.displayName}`, JSON.stringify(newUser.user));
 
         inputEmail.value = "";
         inputPassword.value = "";
@@ -45,6 +51,9 @@ export default {
         inputPassword.value = "";
       });
     };
+
+    onMounted(() => {
+    });
 
     const openRegPage = () => {
       router.push({ name: "registration" });
