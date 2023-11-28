@@ -161,7 +161,7 @@ export default {
   .send > input {
     width: 250px;
   }
-  
+
   .shrink {
     width: 300px;
   }
