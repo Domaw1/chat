@@ -24,6 +24,9 @@ import {
   updatePhoneNumber,
 } from "firebase/auth";
 
+import { getStorage, uploadBytes, getDownloadURL, } from "firebase/storage";
+import { ref as ref_ } from "firebase/storage";
+
 import "firebase/database";
 
 const firebaseConfig = {
@@ -39,7 +42,27 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const d = getFirestore(app);
-const auth = getAuth(app);
+
+export function createUserImage(file, username) {
+  const storage = getStorage();
+  const storageRef = ref_(storage, `${username}.jpg`);
+
+  const metadata = {
+    contentType: file.type,
+  }
+
+  uploadBytes(storageRef, file, metadata).then((snapshot) => {
+    console.log('Uploaded a blob or file!');
+  });
+
+}
+
+export async function getUserImage(username) {
+  const storage = getStorage();
+  const starsRef = ref_(storage, `${username}.jpg`);
+
+  return await getDownloadURL(starsRef);
+}
 
 export async function createNewUser(email, password, username) {
   const auth = getAuth();
@@ -50,13 +73,10 @@ export async function createNewUser(email, password, username) {
       "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
   })
     .then(() => {
-      // Profile updated!
-      // ...
       console.log("updated!");
     })
     .catch((error) => {
-      // An error occurred
-      // ...
+      console.log(error.message);
     });
 
   return create;
@@ -71,6 +91,7 @@ export async function signInUser(email, password) {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
+      console.log(errorMessage);
     });
 
   return getSignIn;

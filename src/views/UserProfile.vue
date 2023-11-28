@@ -1,9 +1,8 @@
 <template>
   <div>
-    {{ currentUser }}
     <div class="user-data">
       <div class="img">
-        <img :src="currentUser.photoURL" alt="userPic" />
+        <img :src="currentUser.photoURL" alt="userPic" ref="avatar"/>
       </div>
       <div class="user-contacts">
         <h1>Имя: {{ currentUser.displayName }}</h1>
@@ -22,8 +21,14 @@
 </template>
 
 <script>
-import { getCurrentUser, updateUser } from "@/db/db";
-import { ref, onMounted } from "vue";
+import {
+  getCurrentUser,
+  updateUser,
+  createUserImage,
+  getUserImage,
+  uploadFileToFirebaseStorage
+} from "@/db/db";
+import { ref, onMounted, createElementBlock } from "vue";
 import MyButton from "@/components/UI/MyButton";
 import EditProfilePopup from "@/components/EditProfilePopup.vue";
 
@@ -37,6 +42,7 @@ export default {
   setup() {
     const currentUser = ref({});
     const isOpen = ref(false);
+    const avatar = ref(null);
 
     const openEditingPopup = () => {
       isOpen.value = true;
@@ -47,10 +53,14 @@ export default {
     };
 
     const changeProfile = (propertiesToUpdate) => {
-      updateUser(
-        currentUser.value,
-        propertiesToUpdate.value.name,
-        propertiesToUpdate.value.email
+      // updateUser(
+      //   currentUser.value,
+      //   propertiesToUpdate.value.name,
+      //   propertiesToUpdate.value.email
+      // );
+      createUserImage(
+        propertiesToUpdate.value.photo[0],
+        currentUser.value.displayName
       );
     };
 
@@ -58,12 +68,18 @@ export default {
       getCurrentUser()
         .then((user) => {
           currentUser.value = user;
+          const url = getUserImage(currentUser.value.displayName).then((url) => {
+            currentUser.value.photoURL = url;
+          }).catch((err) => {
+            console.log(err.message);
+          });
         })
         .catch(() => {});
     });
     return {
       currentUser,
       isOpen,
+      avatar,
       openEditingPopup,
       hideEditingPopup,
       changeProfile,
