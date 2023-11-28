@@ -21,7 +21,6 @@ import {
   setPersistence,
   browserLocalPersistence,
   updateEmail,
-  updatePhoneNumber,
 } from "firebase/auth";
 
 import { getStorage, uploadBytes, getDownloadURL, } from "firebase/storage";
