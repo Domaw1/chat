@@ -10,7 +10,9 @@
     <div
       v-for="message in messages"
       :key="message.email"
-      :class="message.displayName === currentUsername ? 'message' : 'friend-message'"
+      :class="
+        message.displayName === currentUsername ? 'message' : 'friend-message'
+      "
     >
       <div class="username">{{ message.displayName }}</div>
       <div class="mes">
@@ -35,9 +37,9 @@ export default {
     },
 
     currentUsername: {
-        type: String,
-        required: true,
-    }
+      type: String,
+      required: true,
+    },
   },
 
   setup() {
@@ -110,6 +112,14 @@ export default {
 .mes-content {
   margin: 0 10px 10px 0;
   font-size: 20px;
+  word-wrap: break-word;
+  max-width: 800px;
+}
+
+@media screen and (width < 900px) {
+  .mes-content {
+    max-width: 300px;
+  }
 }
 
 .time {
