@@ -184,34 +184,6 @@ h1 {
   margin-top: 20px;
 }
 
-input {
-  width: 250px;
-  height: 30px;
-  margin-bottom: 20px;
-  padding: 8px;
-  border-radius: 7px;
-  border: none;
-  box-shadow: 1px 1px 6px black;
-}
-
-.reg-btn {
-  width: 250px;
-  height: 35px;
-  font-size: 20px;
-  box-shadow: 1px 1px 6px black;
-  border: none;
-  background-color: #ea526f;
-  color: aliceblue;
-  border-radius: 7px;
-}
-
-.shrink {
-  width: 250px;
-  text-align: center;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
 .shrink-password {
   width: 250px;
   line-height: 25px;
