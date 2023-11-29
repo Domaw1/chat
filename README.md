@@ -1,4 +1,4 @@
-# ozon
+# Chat
 
 ## Project setup
 ```
