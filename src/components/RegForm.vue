@@ -1,10 +1,64 @@
 <template>
   <div class="log-form">
     <h1>Регистрация</h1>
-    <input type="text" placeholder="Ваше имя..." v-model="inputUsername" />
-    <input type="text" placeholder="Ваша почта..." v-model="inputEmail" />
-    <input type="text" placeholder="Ваш пароль..." v-model="inputPassword" />
-    <my-button @click="reg">Зарегистрироваться</my-button>
+    <v-container>
+      <v-row class="mb-5">
+        <v-col cols="2" sm="1">
+          <v-text-field
+            :type="show2 ? 'text' : 'password'"
+            label="Придумайте себе имя"
+            variant="outlined"
+            density="compact"
+            class="shrink-password"
+            v-model="newUser.inputUsername"
+            :rules="[rules.required]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row class="mb-5">
+        <v-col cols="2" sm="1">
+          <v-text-field
+            label="Введите вашу почту"
+            variant="outlined"
+            density="compact"
+            class="shrink-password"
+            v-model="newUser.inputEmail"
+            :rules="[rules.email, rules.required]"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row class="mb-6">
+        <v-col cols="1" sm="1">
+          <v-text-field
+            :append-inner-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required, rules.min]"
+            :type="show1 ? 'text' : 'password'"
+            label="Придумайте пароль"
+            variant="outlined"
+            density="compact"
+            class="shrink-password"
+            v-model="newUser.inputPassword"
+            @click:append-inner="show1 = !show1"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col cols="2" sm="1">
+          <v-text-field
+            :append-inner-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required, rules.min, rules.match]"
+            :type="show2 ? 'text' : 'password'"
+            label="Повторите пароль"
+            variant="outlined"
+            density="compact"
+            class="shrink-password"
+            v-model="newUser.inputRepeatPassword"
+            @click:append-inner="show2 = !show2"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+    </v-container>
+    <my-button class="btn-reg" @click="reg">Зарегистрироваться</my-button>
     <button class="log-btn" @click="openLogPage">Войти...</button>
   </div>
 </template>
@@ -14,37 +68,76 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { createNewUser } from "@/db/db";
 import MyButton from "./UI/MyButton.vue";
+import {
+  VTextField,
+  VRow,
+  VCol,
+  VContainer,
+} from "vuetify/lib/components/index.mjs";
 
 export default {
   name: "RegForm",
-  components: { MyButton },
+  components: { MyButton, VTextField, VRow, VCol, VContainer },
 
   setup() {
-    const inputEmail = ref("");
-    const inputPassword = ref("");
-    const inputUsername = ref("");
+    const newUser = ref({
+      inputUsername: "",
+      inputEmail: "",
+      inputPassword: "",
+      inputRepeatPassword: "",
+    });
     const router = useRouter();
+    const show1 = ref(true);
+    const show2 = ref(true);
+
+    const rules = {
+      required: (value) => !!value || "Обязательное поле.",
+      counter: (value) => value.length <= 20 || "Max 20 characters",
+      min: (v) => v.length >= 6 || "Минимум 6 символов",
+      match: (value) =>
+        value === newUser.value.inputPassword || "Пароли не совпадают",
+      email: (value) => {
+        const pattern =
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return pattern.test(value) || "Неверный e-mail.";
+      },
+    };
 
     const reg = () => {
-      const user = {
-        username: inputUsername.value,
-        email: inputEmail.value,
-        password: inputPassword.value,
-      };
+      const checkingForEmptyStrings =
+        newUser.value.inputEmail === "" ||
+        newUser.value.inputPassword === "" ||
+        newUser.value.inputUsername === "" ||
+        newUser.value.inputRepeatPassword == "";
 
-      const u = createNewUser(user.email, user.password, user.username);
-      u.then(() => {
-        alert("Успешно! Авторизуйтесь.");
-        router.push({
-          name: "home",
+      const checkingForPasswords =
+        newUser.value.inputPassword === newUser.value.inputRepeatPassword;
+
+      if (checkingForEmptyStrings) {
+        alert("Все поля обязательны к заполнению");
+        return;
+      } else if (!checkingForPasswords) {
+        alert("Пароли не совпадают");
+        return;
+      } else {
+        const u = createNewUser(
+          newUser.value.inputEmail,
+          newUser.value.inputPassword,
+          newUser.value.inputUsername
+        );
+        u.then(() => {
+          alert("Успешно! Добро пожаловать!");
+          router.push({
+            name: "home",
+          });
+          newUser.value.inputEmail = "";
+          newUser.value.inputPassword = "";
+        }).catch((error) => {
+          alert(error.message);
+          newUser.value.inputEmail = "";
+          newUser.value.inputPassword = "";
         });
-        inputEmail.value = "";
-        inputPassword.value = "";
-      }).catch((error) => {
-        alert(error.message);
-        inputEmail.value = "";
-        inputPassword.value = "";
-      });
+      }
     };
 
     const openLogPage = () => {
@@ -54,9 +147,10 @@ export default {
     };
 
     return {
-      inputPassword,
-      inputEmail,
-      inputUsername,
+      newUser,
+      rules,
+      show1,
+      show2,
       reg,
       openLogPage,
     };
@@ -70,7 +164,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 300px;
+  height: 500px;
   width: 300px;
   background-color: aliceblue;
   padding: 10px;
@@ -109,5 +203,22 @@ input {
   background-color: #ea526f;
   color: aliceblue;
   border-radius: 7px;
+}
+
+.shrink {
+  width: 250px;
+  text-align: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.shrink-password {
+  width: 250px;
+  line-height: 25px;
+  height: 25px;
+}
+
+.btn-reg {
+  margin-top: 30px;
 }
 </style>

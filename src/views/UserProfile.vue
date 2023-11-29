@@ -23,12 +23,10 @@
 <script>
 import {
   getCurrentUser,
-  updateUser,
   createUserImage,
   getUserImage,
-  uploadFileToFirebaseStorage
 } from "@/db/db";
-import { ref, onMounted, createElementBlock } from "vue";
+import { ref, onMounted } from "vue";
 import MyButton from "@/components/UI/MyButton";
 import EditProfilePopup from "@/components/EditProfilePopup.vue";
 
