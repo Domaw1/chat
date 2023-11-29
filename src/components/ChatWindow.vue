@@ -7,17 +7,30 @@
         color="red"
       ></v-progress-circular>
     </div>
-    <div
-      v-for="message in messages"
-      :key="message.email"
-      :class="
-        message.displayName === currentUsername ? 'message' : 'friend-message'
-      "
-    >
-      <div class="username">{{ message.displayName }}</div>
-      <div class="mes">
-        <div class="mes-content">{{ message.content }}</div>
-        <div class="time">{{ message.time }}</div>
+    <div v-for="message in messages" :key="message.email" class="ms">
+      <div
+        :class="
+          message.displayName === currentUsername ? 'my-message' : 'my-friend-message'
+        "
+      >
+        <div>
+          <user-avatar :username="message.displayName"></user-avatar>
+        </div>
+        <div
+          :class="
+            message.displayName === currentUsername
+              ? 'message'
+              : 'friend-message'
+          "
+        >
+          <div class="username">{{ message.displayName }}</div>
+          <div class="full-message">
+            <div class="mes">
+              <div class="mes-content">{{ message.content }}</div>
+              <div class="time">{{ message.time }}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -25,9 +38,13 @@
 
 <script>
 import { ref, onUpdated } from "vue";
+import UserAvatar from "./UserAvatar.vue";
 
 export default {
   name: "ChatWindow",
+  components: {
+    UserAvatar,
+  },
 
   props: {
     messages: {
@@ -125,5 +142,23 @@ export default {
 .time {
   font-size: 15px;
   align-self: flex-end;
+}
+
+.full-message {
+  display: flex;
+}
+
+.ms {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-message, .my-friend-message {
+  display: flex;
+  align-items: center;
+}
+
+.my-message {
+  flex-direction: row-reverse;
 }
 </style>

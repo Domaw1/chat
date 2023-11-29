@@ -66,14 +66,12 @@ export default {
       getCurrentUser()
         .then((user) => {
           currentUser.value = user;
-          const url = getUserImage(currentUser.value.displayName).then((url) => {
-            currentUser.value.photoURL = url;
-          }).catch((err) => {
-            console.log(err.message);
-          });
         })
-        .catch(() => {});
+        .catch((error) => {
+          console.log(error.message);
+        });
     });
+    
     return {
       currentUser,
       isOpen,

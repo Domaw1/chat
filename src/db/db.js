@@ -23,8 +23,9 @@ import {
   updateEmail,
 } from "firebase/auth";
 
-import { getStorage, uploadBytes, getDownloadURL, } from "firebase/storage";
+import { getStorage, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ref as ref_ } from "firebase/storage";
+import { useUserStore } from "@/store/user";
 
 import "firebase/database";
 
@@ -44,16 +45,33 @@ const d = getFirestore(app);
 
 export function createUserImage(file, username) {
   const storage = getStorage();
+  const auth = getAuth();
   const storageRef = ref_(storage, `${username}.jpg`);
 
   const metadata = {
     contentType: file.type,
-  }
+  };
 
   uploadBytes(storageRef, file, metadata).then((snapshot) => {
-    console.log('Uploaded a blob or file!');
+    console.log("Uploaded a blob or file!");
+    const newImage = ref("");
+    getUserImage(username)
+      .then((url) => {
+        newImage.value = url;
+        updateProfile(auth.currentUser, {
+          photoURL: newImage.value,
+        })
+          .then(() => {
+            console.log("updated!");
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
   });
-
 }
 
 export async function getUserImage(username) {
@@ -145,6 +163,7 @@ export function getCurrentUser() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         resolve(user);
+        useUserStore().userName = user;
       } else {
         reject(new Error("User is signed out"));
       }

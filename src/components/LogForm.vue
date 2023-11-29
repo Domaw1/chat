@@ -5,6 +5,7 @@
       <v-row>
         <v-col cols="1" sm="1">
           <v-text-field
+            :rules="[rules.required, rules.email]"
             v-model="inputEmail"
             clearable
             label="Ваша почта"
@@ -12,7 +13,6 @@
             variant="outlined"
             class="shrink-password"
             density="compact"
-            :rules="[rules.required, rules.email]"
           >
           </v-text-field>
         </v-col>
@@ -20,16 +20,16 @@
       <v-row>
         <v-col cols="1" sm="1">
           <v-text-field
-            :append-inner-icon="show2 ? 'mdi-eye' : 'mdi-eye-off'"
+            :append-inner-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[rules.required, rules.min]"
-            :type="show2 ? 'text' : 'password'"
+            :type="show ? 'text' : 'password'"
             label="Ваш пароль"
             variant="outlined"
             class="shrink-password"
             density="compact"
             v-model="inputPassword"
             @keydown.enter="login"
-            @click:append-inner="show2 = !show2"
+            @click:append-inner="show = !show2"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -68,7 +68,7 @@ export default {
     const inputPassword = ref("");
     const router = useRouter();
     const store = useUserStore();
-    const show2 = ref(false);
+    const show = ref(false);
 
     const rules = {
       required: (value) => !!value || "Обязательное поле.",
@@ -108,8 +108,6 @@ export default {
       }
     };
 
-    onMounted(() => {});
-
     const openRegPage = () => {
       router.push({ name: "registration" });
     };
@@ -118,7 +116,7 @@ export default {
       inputEmail,
       inputPassword,
       rules,
-      show2,
+      show,
       login,
       openRegPage,
     };
