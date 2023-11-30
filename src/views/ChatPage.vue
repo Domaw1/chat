@@ -20,6 +20,7 @@ import { getMessages, getCurrentUser, signOutUser } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
+import { useUserStore } from '@/store/user';
 
 export default {
   name: "ChatPage",
@@ -35,6 +36,7 @@ export default {
     const router = useRouter();
     const { usersName } = getMessages();
     const us = ref("");
+    const store = useUserStore();
 
     const signOut = () => {
       signOutUser();

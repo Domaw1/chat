@@ -1,9 +1,25 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 
-export const useUserStore = defineStore("users", () => {
-  const userName = ref({});
-  const getUserName = computed(() => userName.value);
+export const useUserStore = defineStore("users", {
+  state: () => {
+    return {
+      user: {},
+      users: []
+    }
+  },
 
-  return { userName, getUserName };
+  getters: {
+    getUser: (state) => state.user,
+  },
+
+  actions: {
+    setUser(newUser) {
+      this.user = newUser;
+    },
+
+    addUser(newUser) {
+      this.users.push(newUser);
+    }
+  }
 });

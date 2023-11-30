@@ -163,7 +163,6 @@ export function getCurrentUser() {
     auth.onAuthStateChanged((user) => {
       if (user) {
         resolve(user);
-        useUserStore().userName = user;
       } else {
         reject(new Error("User is signed out"));
       }

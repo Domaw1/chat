@@ -97,6 +97,7 @@ export default {
               name: "chat",
             });
             store.userName = newUser.user;
+            store.setUser(newUser.user);
             inputEmail.value = "";
             inputPassword.value = "";
           }

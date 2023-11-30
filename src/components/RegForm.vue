@@ -87,8 +87,8 @@ export default {
       inputRepeatPassword: "",
     });
     const router = useRouter();
-    const show1 = ref(true);
-    const show2 = ref(true);
+    const show1 = ref(false);
+    const show2 = ref(false);
 
     const rules = {
       required: (value) => !!value || "Обязательное поле.",
