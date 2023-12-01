@@ -19,6 +19,7 @@
           prepend-icon="mdi-camera"
           label="Фото профиля"
           class="file_input"
+          variant="outlined"
           v-model="propertiesToUpdate.photo"
         ></v-file-input>
       </div>
@@ -31,7 +32,6 @@
 import MyButton from "./UI/MyButton.vue";
 import { ref } from "vue";
 import { VFileInput } from "vuetify/lib/components/index.mjs";
-import { createUserImage } from "@/db/db";
 
 export default {
   name: "EditProfilePopup",

@@ -144,12 +144,9 @@ export default {
 
 .picker-emoji {
   align-self: flex-end;
-  top: 47%;
-  left: 60%;
-  right: 0;
-  bottom: 0;
-  position: fixed;
-  display: flex;
+  position: absolute;
+  bottom: 10%;
+  width: auto;
 }
 
 .emojis {
@@ -159,14 +156,14 @@ export default {
 
 @media screen and (width < 600px) {
   .send > input {
-    width: 250px;
+    width: 30%;
   }
 
   .shrink {
     width: 300px;
   }
 
-  .picker-emoji {
+  /* .picker-emoji {
     align-self: flex-end;
     top: 42%;
     left: 20%;
@@ -175,6 +172,6 @@ export default {
     position: fixed;
     display: flex;
     margin-right: 15px;
-  }
+  } */
 }
 </style>

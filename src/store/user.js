@@ -11,6 +11,10 @@ export const useUserStore = defineStore("users", {
 
   getters: {
     getUser: (state) => state.user,
+    getUserByName: (state) => {
+      return (username) => state.users.find(user => user.username === username);
+    },
+    
   },
 
   actions: {

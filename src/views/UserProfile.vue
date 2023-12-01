@@ -2,7 +2,7 @@
   <div>
     <div class="user-data">
       <div class="img">
-        <img :src="currentUser.photoURL" alt="userPic" ref="avatar"/>
+        <img :src="currentUser.photoURL" alt="userPic" ref="avatar" />
       </div>
       <div class="user-contacts">
         <h1>Имя: {{ currentUser.displayName }}</h1>
@@ -21,11 +21,7 @@
 </template>
 
 <script>
-import {
-  getCurrentUser,
-  createUserImage,
-  getUserImage,
-} from "@/db/db";
+import { getCurrentUser, createUserImage, getUserImage } from "@/db/db";
 import { ref, onMounted } from "vue";
 import MyButton from "@/components/UI/MyButton";
 import EditProfilePopup from "@/components/EditProfilePopup.vue";
@@ -56,10 +52,14 @@ export default {
       //   propertiesToUpdate.value.name,
       //   propertiesToUpdate.value.email
       // );
-      createUserImage(
-        propertiesToUpdate.value.photo[0],
-        currentUser.value.displayName
-      );
+      if (propertiesToUpdate.value.photo[0]) {
+        createUserImage(
+          propertiesToUpdate.value.photo[0],
+          currentUser.value.displayName
+        );
+        alert("Успешно!");
+      }
+      isOpen.value = false;
     };
 
     onMounted(() => {
@@ -71,7 +71,7 @@ export default {
           console.log(error.message);
         });
     });
-    
+
     return {
       currentUser,
       isOpen,

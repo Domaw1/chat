@@ -5,7 +5,6 @@
       <v-row class="mb-5">
         <v-col cols="2" sm="1">
           <v-text-field
-            :type="show2 ? 'text' : 'password'"
             label="Придумайте себе имя"
             variant="outlined"
             density="compact"

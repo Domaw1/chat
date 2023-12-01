@@ -14,16 +14,17 @@ const props = defineProps({
 });
 
 const store = useUserStore();
-const { addUser } = store;
 const userImageLink = ref("");
+const { getUserByName } = store;
+const searchedUser = getUserByName(props.username);
 
-if (store.user === props.username) {
-  userImageLink.value = store.userPhoto;
-  console.log("here");
+if (searchedUser?.username === props.username) {
+  userImageLink.value = searchedUser.photo;
 } else {
   getUserImage(props.username)
     .then((url) => {
       userImageLink.value = url;
+      store.addUser({ username: props.username, photo: url });
     })
     .catch(() => {
       userImageLink.value =
