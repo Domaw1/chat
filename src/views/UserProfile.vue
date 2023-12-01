@@ -114,7 +114,7 @@ export default {
 @media screen and (width < 600px) {
   .user-data {
     flex-direction: column;
-    width: 500px;
+    width: 100%;
   }
 
   /* .img {
@@ -123,7 +123,7 @@ export default {
   } */
 
   .avatar {
-    width: 100%;
+    margin-right: 15px;
     height: 350px;
     border-radius: 10px;
   }
