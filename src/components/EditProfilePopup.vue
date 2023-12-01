@@ -106,7 +106,7 @@ export default {
 input {
   width: 400px;
   border: 1px solid #ea526f;
-  padding: 5px;
+  padding: 8px;
   border-radius: 5px;
   margin-bottom: 15px;
 }

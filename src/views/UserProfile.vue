@@ -2,7 +2,7 @@
   <div>
     <div class="user-data">
       <div class="img">
-        <img :src="currentUser.photoURL" alt="userPic" ref="avatar" />
+        <img :src="currentUser.photoURL" alt="userPic" class="avatar"/>
       </div>
       <div class="user-contacts">
         <h1>Имя: {{ currentUser.displayName }}</h1>
@@ -90,7 +90,6 @@ export default {
   border: 2px solid #ea526f;
   border-radius: 10px;
   box-shadow: 1px 1px 10px black;
-  margin: 0px 10px 0px 10px;
 }
 
 .user-contacts {
@@ -100,9 +99,33 @@ export default {
   margin-left: 20px;
 }
 
-.img {
+/* .img {
   display: flex;
   justify-content: center;
   height: 200px;
+} */
+
+.avatar {
+  width: 400px;
+  height: auto;
+  border-radius: 10px;
+}
+
+@media screen and (width < 600px) {
+  .user-data {
+    flex-direction: column;
+    width: 500px;
+  }
+
+  /* .img {
+    width: 100px;
+    height: 300px;
+  } */
+
+  .avatar {
+    width: 100%;
+    height: 350px;
+    border-radius: 10px;
+  }
 }
 </style>
