@@ -20,6 +20,7 @@ const searchedUser = getUserByName(props.username);
 
 if (searchedUser?.username === props.username) {
   userImageLink.value = searchedUser.photo;
+  console.log(store.users);
 } else {
   getUserImage(props.username)
     .then((url) => {
