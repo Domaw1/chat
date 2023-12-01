@@ -81,7 +81,7 @@ export default {
       const time = new Date();
       const hours = `${time.getHours()}:${time.getMinutes()}`;
 
-      if (inputMessage.value !== "") {
+      if (inputMessage.value.trim() !== "") {
         const message = inputMessage.value;
         const currentMessage = {
           displayName: props.displayName,

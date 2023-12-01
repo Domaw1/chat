@@ -7,10 +7,12 @@
         color="red"
       ></v-progress-circular>
     </div>
-    <div v-for="message in messages" :key="message.email" class="ms">
+    <div v-for="message in messages" :key="message.displayName" class="ms">
       <div
         :class="
-          message.displayName === currentUsername ? 'my-message' : 'my-friend-message'
+          message.displayName === currentUsername
+            ? 'my-message'
+            : 'my-friend-message'
         "
       >
         <div>
@@ -37,8 +39,10 @@
 </template>
 
 <script>
-import { ref, onUpdated } from "vue";
+import { ref, onUpdated, onMounted } from "vue";
 import UserAvatar from "./UserAvatar.vue";
+import { useUserStore } from "@/store/user";
+import { getUserImage } from "@/db/db";
 
 export default {
   name: "ChatWindow",
@@ -59,8 +63,30 @@ export default {
     },
   },
 
-  setup() {
+  setup(props) {
     const scrollToMe = ref(null);
+    const store = useUserStore();
+    const { getUserByName } = store;
+    const searchedUser = getUserByName(props.currentUsername);
+
+    onMounted(() => {
+      
+    });
+
+    // if (getUserByName(props.username)?.username === props.username) {
+    //   userImageLink.value = searchedUser.photo;
+    // } else {
+    //   getUserImage(props.username)
+    //     .then((url) => {
+    //       userImageLink.value = url;
+    //       if (!getUserByName(props.username))
+    //         store.addUser({ username: props.username, photo: url });
+    //     })
+    //     .catch(() => {
+    //       userImageLink.value =
+    //         "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
+    //     });
+    // }
 
     const scrollToBottom = () => {
       if (scrollToMe.value) {
@@ -153,7 +179,8 @@ export default {
   flex-direction: column;
 }
 
-.my-message, .my-friend-message {
+.my-message,
+.my-friend-message {
   display: flex;
   align-items: center;
 }
