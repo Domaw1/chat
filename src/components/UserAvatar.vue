@@ -18,14 +18,18 @@ const userImageLink = ref("");
 const { getUserByName } = store;
 const searchedUser = getUserByName(props.username);
 
-if (searchedUser?.username === props.username) {
+if (getUserByName(props.username)?.username === props.username) {
   userImageLink.value = searchedUser.photo;
-  console.log(store.users);
+  // console.log();
 } else {
   getUserImage(props.username)
     .then((url) => {
       userImageLink.value = url;
-      store.addUser({ username: props.username, photo: url });
+      // if (!searchedUser?.username)
+      // console.log(searchedUser.username);
+      // console.log(getUserByName(props.username));
+      if(!getUserByName(props.username))
+        store.addUser({ username: props.username, photo: url });
     })
     .catch(() => {
       userImageLink.value =
