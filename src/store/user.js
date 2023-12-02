@@ -5,7 +5,8 @@ export const useUserStore = defineStore("users", {
   state: () => {
     return {
       user: {},
-      users: []
+      users: [],
+      messages: []
     }
   },
 
@@ -24,6 +25,10 @@ export const useUserStore = defineStore("users", {
 
     addUser(newUser) {
       this.users.push(newUser);
+    },
+
+    setMessages(newMessages) {
+      this.messages = newMessages;
     }
   }
 });

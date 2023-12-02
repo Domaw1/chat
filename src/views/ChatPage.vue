@@ -14,13 +14,13 @@
 
 <script>
 import { VTextField } from "vuetify/lib/components/index.mjs";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick,} from "vue";
 import { useRouter } from "vue-router";
 import { getMessages, getCurrentUser, signOutUser } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
-import { useUserStore } from '@/store/user';
+import { useUserStore } from "@/store/user";
 
 export default {
   name: "ChatPage",
@@ -34,7 +34,7 @@ export default {
   setup() {
     const inputMessage = ref("");
     const router = useRouter();
-    const { usersName } = getMessages();
+    const usersName = getMessages();
     const us = ref("");
     const store = useUserStore();
 
@@ -55,13 +55,16 @@ export default {
     };
 
     onMounted(() => {
-      getCurrentUser().then((user) => {
-        us.value = user;
-      }).catch(() => {
-        router.push({
-          name: 'home'
+      getCurrentUser()
+        .then((user) => {
+          us.value = user;
+        })
+        .catch(() => {
+          router.push({
+            name: "home",
+          });
         });
-      });
+        console.log(usersName);
     });
 
     return {

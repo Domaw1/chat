@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { ref, onUnmounted } from "vue";
+import { ref, onUnmounted, reactive } from "vue";
 
 import {
   getFirestore,
@@ -133,7 +133,7 @@ export function getMessages() {
   });
   onUnmounted(unsubscribe);
 
-  return { usersName };
+  return usersName;
 }
 
 export async function sendMessageToFirestore(user) {

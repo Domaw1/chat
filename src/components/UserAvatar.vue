@@ -16,10 +16,10 @@ const props = defineProps({
 const store = useUserStore();
 const userImageLink = ref("");
 const { getUserByName } = store;
-const searchedUser = getUserByName(props.username);
-
+// console.log(getUserByName(props.username));
+// const searchedUser = getUserByName(props.username);
+// console.log(searchedUser);
 // userImageLink.value = searchedUser.photo;
-console.log(searchedUser);
 </script>
 
 <style scoped>

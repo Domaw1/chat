@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { ref, onUpdated, onMounted } from "vue";
+import { ref, onUpdated, onMounted, nextTick, watch } from "vue";
 import UserAvatar from "./UserAvatar.vue";
 import { useUserStore } from "@/store/user";
 import { getUserImage } from "@/db/db";
@@ -54,7 +54,6 @@ export default {
     messages: {
       type: Array,
       required: true,
-      default: [],
     },
 
     currentUsername: {
@@ -66,27 +65,31 @@ export default {
   setup(props) {
     const scrollToMe = ref(null);
     const store = useUserStore();
-    const { getUserByName } = store;
+    const mess = props.messages;
+    const { getUserByName, addUser } = store;
     const searchedUser = getUserByName(props.currentUsername);
 
     onMounted(() => {
-      
     });
 
-    // if (getUserByName(props.username)?.username === props.username) {
-    //   userImageLink.value = searchedUser.photo;
-    // } else {
-    //   getUserImage(props.username)
-    //     .then((url) => {
-    //       userImageLink.value = url;
-    //       if (!getUserByName(props.username))
-    //         store.addUser({ username: props.username, photo: url });
-    //     })
-    //     .catch(() => {
-    //       userImageLink.value =
-    //         "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
-    //     });
-    // }
+    // props.messages.forEach((message) => {
+    //   if (getUserByName(message.displayName) === undefined) {
+    //     getUserImage(message.displayName)
+    //       .then((url) => {
+    //         store.addUser({ username: message.displayName, photo: url });
+    //       })
+    //       .catch(() => {
+    //         store.addUser({
+    //           username: message.displayName,
+    //           photo:
+    //             "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+    //         });
+    //       });
+    //   }
+    //   else {
+    //     console.log("not");
+    //   }
+    // });
 
     const scrollToBottom = () => {
       if (scrollToMe.value) {
