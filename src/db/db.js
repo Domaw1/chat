@@ -11,6 +11,7 @@ import {
   setDoc,
   arrayUnion,
   updateDoc,
+  where,
 } from "firebase/firestore";
 
 import {
@@ -141,24 +142,6 @@ export async function someFunc() {
 }
 
 export function getMessages() {
-  // const users = ref([]);
-  // const usersName = ref([]);
-
-  // const q = query(collection(d, "messages"));
-  // const unsubscribe = onSnapshot(q, (snapshot) => {
-  //   users.value = snapshot.docs
-  //     .map((doc) => ({ ...doc.data().messages }))
-  //     .reverse();
-  //   usersName.value = [];
-  //   Object.keys(users.value).forEach((key) => {
-  //     Object.keys(users.value[key]).forEach((value) => {
-  //       usersName.value.push(users.value[key][value]);
-  //     });
-  //   });
-  // });
-  // onUnmounted(unsubscribe);
-
-  // return usersName;
   const usersName = ref([]);
 
   const q = query(collection(d, "messages"));
@@ -174,7 +157,7 @@ export function getMessages() {
 
 export async function sendMessageToFirestore(user) {
   const d = getFirestore(app);
-  const usersRef = doc(d, "messages", "usersMessages");
+  const usersRef = doc(d, "messages", "userMessages");
   const docSnap = await getDoc(usersRef);
   const currentMessage = {
     displayName: user.displayName,

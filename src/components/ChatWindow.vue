@@ -16,7 +16,7 @@
         "
       >
         <div>
-          <user-avatar :username="message.photo"></user-avatar>
+          <user-avatar :photo="message.photo"></user-avatar>
         </div>
         <div
           :class="
@@ -71,43 +71,16 @@ export default {
 
     const imagesLoaded = ref(false);
 
-    onMounted(() => {
-      // const imagePromises = mess.map(async (user) => {
-      //   try {
-      //     user["photo"] = await getUserImage(user.displayName);
-      //   } catch (error) {
-      //     user["photo"] = "https://example.com/default-avatar.jpg";
-      //   }
-      // });
+    onUpdated(() => {
+      
+    });
 
-      // await Promise.all(imagePromises);
-      // imagesLoaded.value = true;
-      // nextTick(scrollToBottom);
+    onMounted(() => {
     });
 
     onUpdated(() => {
-      if (imagesLoaded.value) {
-        scrollToBottom();
-      }
+      scrollToBottom();
     });
-    // props.messages.forEach((message) => {
-    //   if (getUserByName(message.displayName) === undefined) {
-    //     getUserImage(message.displayName)
-    //       .then((url) => {
-    //         store.addUser({ username: message.displayName, photo: url });
-    //       })
-    //       .catch(() => {
-    //         store.addUser({
-    //           username: message.displayName,
-    //           photo:
-    //             "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-    //         });
-    //       });
-    //   }
-    //   else {
-    //     console.log("not");
-    //   }
-    // });
 
     const scrollToBottom = () => {
       if (scrollToMe.value) {
@@ -198,6 +171,7 @@ export default {
 .ms {
   display: flex;
   flex-direction: column;
+  margin-top: 5px;
 }
 
 .my-message,

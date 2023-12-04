@@ -4,6 +4,7 @@
       <h1 @click="openProfile(us.displayName)">
         Добро пожаловать, {{ us.displayName }}
       </h1>
+      <user-avatar :photo="us.photoURL" alt="user avatar" class="user-avatar" @click="openProfile(us.displayName)"/>
       <button @click="signOut">Выйти</button>
     </div>
     <chat-window :messages="usersName" :currentUsername="us.displayName" />
@@ -14,12 +15,19 @@
 
 <script>
 import { VTextField } from "vuetify/lib/components/index.mjs";
-import { ref, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick, watch, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
-import { getMessages, getCurrentUser, signOutUser } from "@/db/db";
+import {
+  getMessages,
+  getCurrentUser,
+  signOutUser,
+  someFunc,
+  getUserImage,
+} from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
+import UserAvatar from "@/components/UserAvatar.vue";
 import { useUserStore } from "@/store/user";
 
 export default {
@@ -29,6 +37,7 @@ export default {
     VProgressCircular,
     ChatWindow,
     SendMessageForm,
+    UserAvatar,
   },
 
   setup() {
@@ -37,6 +46,26 @@ export default {
     const { usersName } = getMessages();
     const us = ref("");
     const store = useUserStore();
+    const { getUserByName, addUser } = store;
+
+    watch(usersName, (newValue, oldValue) => {
+      usersName.value.forEach((user) => {
+        const userInStore = getUserByName(user.displayName);
+        if (!userInStore) {
+          getUserImage(user.displayName)
+            .then((url) => {
+              addUser({ username: user.displayName, photo: url });
+              user["photo"] = url;
+            })
+            .catch((e) => {
+              user["photo"] =
+                "https://avatars.mds.yandex.net/i?id=0d18ad8a7d1a969fabe8b3ded695d3396ea950a0-11376477-images-thumbs&n=13";
+            });
+        } else {
+          user["photo"] = userInStore.photo;
+        }
+      });
+    });
 
     const signOut = () => {
       signOutUser();
@@ -98,7 +127,6 @@ export default {
 
 .hat {
   display: flex;
-  justify-content: space-between;
   width: 100%;
   height: 150px;
   margin-bottom: 20px;
@@ -124,7 +152,12 @@ h1 {
   margin-left: 5px;
 }
 
-h1:hover {
+h1:hover, .user-avatar:hover {
   cursor: pointer;
+}
+
+.user-avatar {
+  align-self: flex-end;
+  margin-left: 15px;
 }
 </style>
