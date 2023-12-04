@@ -115,25 +115,61 @@ export async function signInUser(email, password) {
   return getSignIn;
 }
 
+export async function someFunc() {
+  const usersName = ref([]);
+  const q = query(collection(d, "messages"));
+
+  let unsubscribe;
+
+  const promise = new Promise((resolve, reject) => {
+    unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const users = snapshot.docs.map((doc) => doc.data().messages);
+        usersName.value = Object.values(users).flat();
+        resolve(usersName.value);
+      },
+      (error) => {
+        reject(error);
+      }
+    );
+  });
+
+  onUnmounted(unsubscribe);
+
+  return promise;
+}
+
 export function getMessages() {
-  const users = ref([]);
+  // const users = ref([]);
+  // const usersName = ref([]);
+
+  // const q = query(collection(d, "messages"));
+  // const unsubscribe = onSnapshot(q, (snapshot) => {
+  //   users.value = snapshot.docs
+  //     .map((doc) => ({ ...doc.data().messages }))
+  //     .reverse();
+  //   usersName.value = [];
+  //   Object.keys(users.value).forEach((key) => {
+  //     Object.keys(users.value[key]).forEach((value) => {
+  //       usersName.value.push(users.value[key][value]);
+  //     });
+  //   });
+  // });
+  // onUnmounted(unsubscribe);
+
+  // return usersName;
   const usersName = ref([]);
 
   const q = query(collection(d, "messages"));
   const unsubscribe = onSnapshot(q, (snapshot) => {
-    users.value = snapshot.docs
-      .map((doc) => ({ ...doc.data().messages }))
-      .reverse();
-    usersName.value = [];
-    Object.keys(users.value).forEach((key) => {
-      Object.keys(users.value[key]).forEach((value) => {
-        usersName.value.push(users.value[key][value]);
-      });
-    });
+    const users = snapshot.docs.map((doc) => doc.data().messages);
+    usersName.value = Object.values(users).flat();
   });
+
   onUnmounted(unsubscribe);
 
-  return usersName;
+  return { usersName };
 }
 
 export async function sendMessageToFirestore(user) {

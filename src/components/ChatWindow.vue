@@ -16,7 +16,7 @@
         "
       >
         <div>
-          <user-avatar :username="message.displayName"></user-avatar>
+          <user-avatar :username="message.photo"></user-avatar>
         </div>
         <div
           :class="
@@ -69,9 +69,27 @@ export default {
     const { getUserByName, addUser } = store;
     const searchedUser = getUserByName(props.currentUsername);
 
+    const imagesLoaded = ref(false);
+
     onMounted(() => {
+      // const imagePromises = mess.map(async (user) => {
+      //   try {
+      //     user["photo"] = await getUserImage(user.displayName);
+      //   } catch (error) {
+      //     user["photo"] = "https://example.com/default-avatar.jpg";
+      //   }
+      // });
+
+      // await Promise.all(imagePromises);
+      // imagesLoaded.value = true;
+      // nextTick(scrollToBottom);
     });
 
+    onUpdated(() => {
+      if (imagesLoaded.value) {
+        scrollToBottom();
+      }
+    });
     // props.messages.forEach((message) => {
     //   if (getUserByName(message.displayName) === undefined) {
     //     getUserImage(message.displayName)
@@ -162,7 +180,7 @@ export default {
   max-width: 800px;
 }
 
-@media screen and (width < 900px) {
+@media screen and (max-width: 900px) {
   .mes-content {
     max-width: 300px;
   }

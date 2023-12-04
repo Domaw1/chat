@@ -14,7 +14,7 @@
 
 <script>
 import { VTextField } from "vuetify/lib/components/index.mjs";
-import { ref, onMounted, nextTick,} from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { getMessages, getCurrentUser, signOutUser } from "@/db/db";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
@@ -34,7 +34,7 @@ export default {
   setup() {
     const inputMessage = ref("");
     const router = useRouter();
-    const usersName = getMessages();
+    const { usersName } = getMessages();
     const us = ref("");
     const store = useUserStore();
 
@@ -64,7 +64,6 @@ export default {
             name: "home",
           });
         });
-        console.log(usersName);
     });
 
     return {
