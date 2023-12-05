@@ -39,10 +39,8 @@
 </template>
 
 <script>
-import { ref, onUpdated, onMounted, nextTick, watch } from "vue";
+import { ref, onUpdated } from "vue";
 import UserAvatar from "./UserAvatar.vue";
-import { useUserStore } from "@/store/user";
-import { getUserImage } from "@/db/db";
 
 export default {
   name: "ChatWindow",
@@ -64,19 +62,6 @@ export default {
 
   setup(props) {
     const scrollToMe = ref(null);
-    const store = useUserStore();
-    const mess = props.messages;
-    const { getUserByName, addUser } = store;
-    const searchedUser = getUserByName(props.currentUsername);
-
-    const imagesLoaded = ref(false);
-
-    onUpdated(() => {
-      
-    });
-
-    onMounted(() => {
-    });
 
     onUpdated(() => {
       scrollToBottom();

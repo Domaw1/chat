@@ -116,31 +116,6 @@ export async function signInUser(email, password) {
   return getSignIn;
 }
 
-export async function someFunc() {
-  const usersName = ref([]);
-  const q = query(collection(d, "messages"));
-
-  let unsubscribe;
-
-  const promise = new Promise((resolve, reject) => {
-    unsubscribe = onSnapshot(
-      q,
-      (snapshot) => {
-        const users = snapshot.docs.map((doc) => doc.data().messages);
-        usersName.value = Object.values(users).flat();
-        resolve(usersName.value);
-      },
-      (error) => {
-        reject(error);
-      }
-    );
-  });
-
-  onUnmounted(unsubscribe);
-
-  return promise;
-}
-
 export function getMessages() {
   const usersName = ref([]);
 

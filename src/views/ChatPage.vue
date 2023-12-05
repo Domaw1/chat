@@ -4,7 +4,12 @@
       <h1 @click="openProfile(us.displayName)">
         Добро пожаловать, {{ us.displayName }}
       </h1>
-      <user-avatar :photo="us.photoURL" alt="user avatar" class="user-avatar" @click="openProfile(us.displayName)"/>
+      <user-avatar
+        :photo="us.photoURL"
+        alt="user avatar"
+        class="user-avatar"
+        @click="openProfile(us.displayName)"
+      />
       <button @click="signOut">Выйти</button>
     </div>
     <chat-window :messages="usersName" :currentUsername="us.displayName" />
@@ -14,17 +19,15 @@
 </template>
 
 <script>
-import { VTextField } from "vuetify/lib/components/index.mjs";
-import { ref, onMounted, nextTick, watch, onBeforeMount } from "vue";
+import { VTextField, VProgressCircular } from "vuetify/lib/components/index.mjs";
+import { ref, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
   getMessages,
   getCurrentUser,
   signOutUser,
-  someFunc,
   getUserImage,
 } from "@/db/db";
-import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
 import UserAvatar from "@/components/UserAvatar.vue";
@@ -42,29 +45,40 @@ export default {
 
   setup() {
     const inputMessage = ref("");
-    const router = useRouter();
-    const { usersName } = getMessages();
     const us = ref("");
+    const allImagesLoaded = ref(false);
+
+    const router = useRouter();
+
+    const { usersName } = getMessages();
+    
     const store = useUserStore();
     const { getUserByName, addUser } = store;
 
-    watch(usersName, (newValue, oldValue) => {
-      usersName.value.forEach((user) => {
+    watch(usersName, async () => {
+      for (const user of usersName.value) {
         const userInStore = getUserByName(user.displayName);
-        if (!userInStore) {
-          getUserImage(user.displayName)
-            .then((url) => {
-              addUser({ username: user.displayName, photo: url });
-              user["photo"] = url;
-            })
-            .catch((e) => {
-              user["photo"] =
-                "https://avatars.mds.yandex.net/i?id=0d18ad8a7d1a969fabe8b3ded695d3396ea950a0-11376477-images-thumbs&n=13";
+        try {
+          if (!userInStore || !userInStore.photo) {
+            const image = await getUserImage(user.displayName);
+            addUser({ username: user.displayName, photo: image });
+            user.photo = image;
+          } else {
+            user.photo = userInStore.photo;
+          }
+        } catch (error) {
+          if (!userInStore || !userInStore.photo) {
+            addUser({
+              username: user.displayName,
+              photo:
+                "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
             });
-        } else {
-          user["photo"] = userInStore.photo;
+            user.photo =
+              "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
+          }
         }
-      });
+      }
+      allImagesLoaded.value = true;
     });
 
     const signOut = () => {
@@ -99,6 +113,7 @@ export default {
       inputMessage,
       usersName,
       us,
+      allImagesLoaded,
       openProfile,
       signOut,
     };
@@ -152,7 +167,8 @@ h1 {
   margin-left: 5px;
 }
 
-h1:hover, .user-avatar:hover {
+h1:hover,
+.user-avatar:hover {
   cursor: pointer;
 }
 
