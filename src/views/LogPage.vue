@@ -9,6 +9,7 @@ import { getCurrentUser, signInUser } from "@/db/db";
 import LogForm from "@/components/LogForm.vue";
 import { onMounted } from "vue";
 import router from "@/router";
+import Swal from "sweetalert2";
 
 export default {
   name: "HomeView",
@@ -19,15 +20,23 @@ export default {
   setup() {
     const enter = (userToSign) => {
       const u = signInUser(userToSign.email, userToSign.password);
-      u.then((newUser) => {
+      u.then(async (newUser) => {
         if (newUser) {
-          alert("Успешно! Добро пожаловать!");
+          await Swal.fire({
+            title: "Успешно!",
+            text: "Добро пожаловать!",
+            icon: "success",
+          });
           router.push({
             name: "chat",
           });
         }
       }).catch((error) => {
-        alert(error.message);
+        Swal.fire({
+          title: "Ошибка!",
+          text: error.message,
+          icon: "error",
+        });
       });
     };
 

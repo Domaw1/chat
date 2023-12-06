@@ -72,6 +72,7 @@ import {
   VCol,
   VContainer,
 } from "vuetify/lib/components/index.mjs";
+import Swal from "sweetalert2";
 
 export default {
   name: "RegForm",
@@ -112,22 +113,30 @@ export default {
         newUser.value.inputPassword === newUser.value.inputRepeatPassword;
 
       if (checkingForEmptyInputs) {
-        alert("Все поля обязательны к заполнению");
+        Swal.fire({
+          title: "Ошибка!",
+          text: "Все поля обязательны к заполнению",
+          icon: "error",
+        });
       } else if (!checkingForPasswords) {
-        alert("Пароли не совпадают");
+        Swal.fire({
+          title: "Ошибка!",
+          text: "Пароли не совпадают",
+          icon: "error",
+        });
       } else {
         const userToCreate = {
           email: newUser.value.inputEmail,
           password: newUser.value.inputPassword,
-          username: newUser.value.inputUsername
-        }
+          username: newUser.value.inputUsername,
+        };
         emit("createUser", userToCreate);
       }
     };
 
     const openLogPage = () => {
       router.push({
-        name: "home",
+        name: "login",
       });
     };
 

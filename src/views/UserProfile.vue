@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="user-data">
-      <div class="img">
-        <img :src="currentUser.photoURL" alt="userPic" class="avatar"/>
+      <div>
+        <img :src="currentUser.photoURL" alt="userPic" class="avatar" />
       </div>
       <div class="user-contacts">
         <h1>Имя: {{ currentUser.displayName }}</h1>
@@ -25,6 +25,8 @@ import { getCurrentUser, createUserImage, getUserImage } from "@/db/db";
 import { ref, onMounted } from "vue";
 import MyButton from "@/components/UI/MyButton";
 import EditProfilePopup from "@/components/EditProfilePopup.vue";
+import Swal from "sweetalert2";
+import router from "@/router";
 
 export default {
   name: "UserProfile",
@@ -46,7 +48,7 @@ export default {
       isOpen.value = false;
     };
 
-    const changeProfile = (propertiesToUpdate) => {
+    const changeProfile = async (propertiesToUpdate) => {
       // updateUser(
       //   currentUser.value,
       //   propertiesToUpdate.value.name,
@@ -57,7 +59,12 @@ export default {
           propertiesToUpdate.value.photo[0],
           currentUser.value.displayName
         );
-        alert("Успешно!");
+        await Swal.fire({
+            title: "Успешно!",
+            text: "Ваш профиль обновлен!",
+            icon: "success",
+          });
+        router.go();
       }
       isOpen.value = false;
     };
@@ -99,12 +106,6 @@ export default {
   margin-left: 20px;
 }
 
-/* .img {
-  display: flex;
-  justify-content: center;
-  height: 200px;
-} */
-
 .avatar {
   width: 400px;
   height: auto;
@@ -116,11 +117,6 @@ export default {
     flex-direction: column;
     width: 100%;
   }
-
-  /* .img {
-    width: 100px;
-    height: 300px;
-  } */
 
   .avatar {
     margin-right: 15px;

@@ -8,6 +8,7 @@
 import RegForm from "@/components/RegForm.vue";
 import { createNewUser } from "@/db/db";
 import router from "@/router";
+import Swal from "sweetalert2";
 
 export default {
   name: "HomeView",
@@ -18,13 +19,21 @@ export default {
   setup() {
     const create = (newUser) => {
       const u = createNewUser(newUser);
-      u.then(() => {
-        alert("Успешно! Добро пожаловать!");
+      u.then(async () => {
+        await Swal.fire({
+          title: "Успешно!",
+          text: "Добро пожаловать!",
+          icon: "success",
+        });
         router.push({
           name: "login",
         });
-      }).catch((error) => {
-        alert(error.message);
+      }).catch(async (error) => {
+        await Swal.fire({
+          title: "Ошибка!",
+          text: error.message,
+          icon: "error",
+        });
       });
     };
 

@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { ref, onUnmounted, reactive } from "vue";
+import { ref, onUnmounted } from "vue";
+import Swal from "sweetalert2";
 
 import {
   getFirestore,
@@ -11,7 +12,6 @@ import {
   setDoc,
   arrayUnion,
   updateDoc,
-  where,
 } from "firebase/firestore";
 
 import {
@@ -26,7 +26,6 @@ import {
 
 import { getStorage, uploadBytes, getDownloadURL } from "firebase/storage";
 import { ref as ref_ } from "firebase/storage";
-import { useUserStore } from "@/store/user";
 
 import "firebase/database";
 
@@ -84,7 +83,11 @@ export async function getUserImage(username) {
 
 export async function createNewUser(newUser) {
   const auth = getAuth();
-  const create = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password);
+  const create = await createUserWithEmailAndPassword(
+    auth,
+    newUser.email,
+    newUser.password
+  );
   updateProfile(auth.currentUser, {
     displayName: newUser.username,
     photoURL:
@@ -107,10 +110,11 @@ export async function signInUser(email, password) {
       return signInWithEmailAndPassword(auth, email, password);
     })
     .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      alert(errorMessage);
-      console.log(errorMessage);
+      Swal.fire({
+        title: "Ошибка!",
+        text: error.message,
+        icon: "error",
+      });
     });
 
   return getSignIn;

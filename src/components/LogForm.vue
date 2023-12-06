@@ -50,6 +50,7 @@ import {
   VRow,
   VCol,
 } from "vuetify/lib/components/index.mjs";
+import Swal from "sweetalert2";
 
 export default {
   name: "LogForm",
@@ -83,7 +84,11 @@ export default {
 
     const login = () => {
       if (user.value.inputEmail === "" || user.value.inputPassword === "") {
-        alert("Все поля обязательны к заполнению");
+        Swal.fire({
+          title: "Ошибка!",
+          text: "Все поля обязательны к заполнению",
+          icon: "error",
+        });
       } else {
         const userToSign = {
           email: user.value.inputEmail,
