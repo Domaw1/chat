@@ -64,8 +64,7 @@
 
 <script>
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { createNewUser } from "@/db/db";
+import router from "@/router";
 import MyButton from "./UI/MyButton.vue";
 import {
   VTextField,
@@ -78,20 +77,20 @@ export default {
   name: "RegForm",
   components: { MyButton, VTextField, VRow, VCol, VContainer },
 
-  setup() {
+  emits: ["createUser"],
+
+  setup(props, { emit }) {
     const newUser = ref({
       inputUsername: "",
       inputEmail: "",
       inputPassword: "",
       inputRepeatPassword: "",
     });
-    const router = useRouter();
     const show1 = ref(false);
     const show2 = ref(false);
 
     const rules = {
       required: (value) => !!value || "Обязательное поле.",
-      counter: (value) => value.length <= 20 || "Max 20 characters",
       min: (v) => v.length >= 6 || "Минимум 6 символов",
       match: (value) =>
         value === newUser.value.inputPassword || "Пароли не совпадают",
@@ -103,7 +102,7 @@ export default {
     };
 
     const reg = () => {
-      const checkingForEmptyStrings =
+      const checkingForEmptyInputs =
         newUser.value.inputEmail === "" ||
         newUser.value.inputPassword === "" ||
         newUser.value.inputUsername === "" ||
@@ -112,30 +111,17 @@ export default {
       const checkingForPasswords =
         newUser.value.inputPassword === newUser.value.inputRepeatPassword;
 
-      if (checkingForEmptyStrings) {
+      if (checkingForEmptyInputs) {
         alert("Все поля обязательны к заполнению");
-        return;
       } else if (!checkingForPasswords) {
         alert("Пароли не совпадают");
-        return;
       } else {
-        const u = createNewUser(
-          newUser.value.inputEmail,
-          newUser.value.inputPassword,
-          newUser.value.inputUsername
-        );
-        u.then(() => {
-          alert("Успешно! Добро пожаловать!");
-          router.push({
-            name: "home",
-          });
-          newUser.value.inputEmail = "";
-          newUser.value.inputPassword = "";
-        }).catch((error) => {
-          alert(error.message);
-          newUser.value.inputEmail = "";
-          newUser.value.inputPassword = "";
-        });
+        const userToCreate = {
+          email: newUser.value.inputEmail,
+          password: newUser.value.inputPassword,
+          username: newUser.value.inputUsername
+        }
+        emit("createUser", userToCreate);
       }
     };
 

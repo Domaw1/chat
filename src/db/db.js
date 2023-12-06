@@ -82,11 +82,11 @@ export async function getUserImage(username) {
   return await getDownloadURL(starsRef);
 }
 
-export async function createNewUser(email, password, username) {
+export async function createNewUser(newUser) {
   const auth = getAuth();
-  const create = await createUserWithEmailAndPassword(auth, email, password);
+  const create = await createUserWithEmailAndPassword(auth, newUser.email, newUser.password);
   updateProfile(auth.currentUser, {
-    displayName: username,
+    displayName: newUser.username,
     photoURL:
       "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
   })

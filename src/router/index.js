@@ -7,7 +7,7 @@ import UserProfile  from '../views/UserProfile.vue';
 const routes = [
   {
     path: '/',
-    name: 'home',
+    name: 'login',
     component: LogPage
   },
   {

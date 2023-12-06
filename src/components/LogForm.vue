@@ -6,7 +6,7 @@
         <v-col cols="1" sm="1">
           <v-text-field
             :rules="[rules.required, rules.email]"
-            v-model="inputEmail"
+            v-model="user.inputEmail"
             clearable
             label="Ваша почта"
             type="text"
@@ -27,9 +27,9 @@
             variant="outlined"
             class="shrink-password"
             density="compact"
-            v-model="inputPassword"
+            v-model="user.inputPassword"
             @keydown.enter="login"
-            @click:append-inner="show = !show2"
+            @click:append-inner="show = !show"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -41,10 +41,8 @@
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { signInUser } from "@/db/db";
-import { useUserStore } from "@/store/user";
 import MyButton from "./UI/MyButton.vue";
 import {
   VTextField,
@@ -63,11 +61,14 @@ export default {
     VRow,
   },
 
-  setup() {
-    const inputEmail = ref("");
-    const inputPassword = ref("");
+  emits: ["enterUser"],
+
+  setup(props, { emit }) {
+    const user = ref({
+      inputUsername: "",
+      inputEmail: "",
+    });
     const router = useRouter();
-    const store = useUserStore();
     const show = ref(false);
 
     const rules = {
@@ -81,31 +82,14 @@ export default {
     };
 
     const login = () => {
-      if (inputEmail.value === "" || inputPassword.value === "") {
+      if (user.value.inputEmail === "" || user.value.inputPassword === "") {
         alert("Все поля обязательны к заполнению");
-        return;
       } else {
         const userToSign = {
-          email: inputEmail.value,
-          password: inputPassword.value,
+          email: user.value.inputEmail,
+          password: user.value.inputPassword,
         };
-        const u = signInUser(userToSign.email, userToSign.password);
-        u.then((newUser) => {
-          if (newUser) {
-            alert("Успешно! Добро пожаловать!");
-            router.push({
-              name: "chat",
-            });
-            store.userName = newUser.user;
-            store.setUser(newUser.user);
-            inputEmail.value = "";
-            inputPassword.value = "";
-          }
-        }).catch((error) => {
-          alert(error.message);
-          inputEmail.value = "";
-          inputPassword.value = "";
-        });
+        emit("enterUser", userToSign);
       }
     };
 
@@ -114,10 +98,9 @@ export default {
     };
 
     return {
-      inputEmail,
-      inputPassword,
       rules,
       show,
+      user,
       login,
       openRegPage,
     };

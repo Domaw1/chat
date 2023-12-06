@@ -19,9 +19,12 @@
 </template>
 
 <script>
-import { VTextField, VProgressCircular } from "vuetify/lib/components/index.mjs";
+import {
+  VTextField,
+  VProgressCircular,
+} from "vuetify/lib/components/index.mjs";
 import { ref, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
+import router from "@/router";
 import {
   getMessages,
   getCurrentUser,
@@ -48,10 +51,8 @@ export default {
     const us = ref("");
     const allImagesLoaded = ref(false);
 
-    const router = useRouter();
-
     const { usersName } = getMessages();
-    
+
     const store = useUserStore();
     const { getUserByName, addUser } = store;
 
@@ -84,7 +85,7 @@ export default {
     const signOut = () => {
       signOutUser();
       router.push({
-        name: "home",
+        name: "login",
       });
     };
 
@@ -104,7 +105,7 @@ export default {
         })
         .catch(() => {
           router.push({
-            name: "home",
+            name: "login",
           });
         });
     });
