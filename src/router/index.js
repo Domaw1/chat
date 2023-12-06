@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import LogPage from '../views/LogPage.vue'
 import ChatPage from '../views/ChatPage.vue';
 import RegPage from '../views/RegPage.vue';
 import UserProfile  from '../views/UserProfile.vue';
@@ -8,7 +8,7 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: LogPage
   },
   {
     path: '/im',
