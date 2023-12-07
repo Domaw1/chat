@@ -123,14 +123,22 @@ export async function signInUser(email, password) {
 export function getMessages() {
   const usersName = ref([]);
 
-  const q = query(collection(d, "messages"));
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const users = snapshot.docs.map((doc) => doc.data().messages);
-    usersName.value = Object.values(users).flat();
+  const unsub = onSnapshot(doc(d, "messages", "Aruut"), (doc) => {
+    usersName.value.push(doc.data());
+    console.log(doc.data());
+    console.log(usersName.value);
   });
 
-  onUnmounted(unsubscribe);
+  // const q = query(collection(d, "messages"));
+  // const unsubscribe = onSnapshot(q, (snapshot) => {
+  //   const users = snapshot.docs.map((doc) => doc.data().messages);
+  //   usersName.value = Object.values(users).flat();
+  //   console.log(usersName.value.value);
+  // });
 
+  // onUnmounted(unsubscribe);
+
+  onUnmounted(unsub);
   return { usersName };
 }
 

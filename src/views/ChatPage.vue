@@ -12,12 +12,13 @@
       />
       <button @click="signOut">Выйти</button>
     </div>
-    <chat-window
+    <user-friends :friends="usersName" />
+    <!-- <chat-window
       :messages="usersName"
       :currentUsername="currentUser.displayName"
     />
     <hr />
-    <send-message-form :displayName="currentUser.displayName" />
+    <send-message-form :displayName="currentUser.displayName" /> -->
   </div>
 </template>
 
@@ -37,6 +38,7 @@ import {
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
 import UserAvatar from "@/components/UserAvatar.vue";
+import UserFriends from "@/components/UserFriends.vue";
 import { useUserStore } from "@/store/user";
 
 export default {
@@ -46,6 +48,7 @@ export default {
     VProgressCircular,
     ChatWindow,
     SendMessageForm,
+    UserFriends,
     UserAvatar,
   },
 
@@ -59,30 +62,63 @@ export default {
     const { getUserByName, addUser } = store;
 
     watch(usersName, async () => {
-      for (const user of usersName.value) {
-        const userInStore = getUserByName(user.displayName);
-        try {
-          if (!userInStore || !userInStore.photo) {
-            const image = await getUserImage(user.displayName);
-            addUser({ username: user.displayName, photo: image });
-            user.photo = image;
-          } else {
-            user.photo = userInStore.photo;
-          }
-        } catch (error) {
-          if (!userInStore || !userInStore.photo) {
-            addUser({
-              username: user.displayName,
-              photo:
-                "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-            });
-            user.photo =
-              "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
-          }
-        }
-      }
-      allImagesLoaded.value = true;
+      console.log(usersName.value);
+      // for (const user of usersName.value) {
+      //   Object.keys(user).forEach(async (key) => {
+      //     // users.value.push(key);
+      //     const userInStore = getUserByName(key);
+      //     try {
+      //       if (!userInStore || !userInStore.photo) {
+      //         const image = await getUserImage(key);
+      //         addUser({ username: key, photo: image });
+      //         user[key].photo = image;
+      //         //   user.photo = image;
+      //       } else {
+      //         //   user.photo = userInStore.photo;
+      //         user[key].photo = userInStore.photo;
+      //       }
+      //     } catch (error) {
+      //       if (!userInStore || !userInStore.photo) {
+      //         addUser({
+      //           username: key,
+      //           photo:
+      //             "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+      //         });
+      //         user[key].photo =
+      //           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
+      //       }
+      //     }
+      //   });
+      // }
+      // allImagesLoaded.value = true;
     });
+
+    // watch(usersName, async () => {
+    //   console.log(usersName.value);
+    //   for (const user of usersName.value) {
+    //     const userInStore = getUserByName(user.displayName);
+    //     try {
+    //       if (!userInStore || !userInStore.photo) {
+    //         const image = await getUserImage(user.displayName);
+    //         addUser({ username: user.displayName, photo: image });
+    //         user.photo = image;
+    //       } else {
+    //         user.photo = userInStore.photo;
+    //       }
+    //     } catch (error) {
+    //       if (!userInStore || !userInStore.photo) {
+    //         addUser({
+    //           username: user.displayName,
+    //           photo:
+    //             "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+    //         });
+    //         user.photo =
+    //           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
+    //       }
+    //     }
+    //   }
+    //   allImagesLoaded.value = true;
+    // });
 
     const signOut = () => {
       signOutUser();
