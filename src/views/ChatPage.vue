@@ -1,20 +1,23 @@
 <template>
   <div class="main">
     <div class="hat">
-      <h1 @click="openProfile(us.displayName)">
-        Добро пожаловать, {{ us.displayName }}
+      <h1 @click="openProfile(currentUser.displayName)">
+        Добро пожаловать, {{ currentUser.displayName }}
       </h1>
       <user-avatar
-        :photo="us.photoURL"
+        :photo="currentUser.photoURL"
         alt="user avatar"
         class="user-avatar"
-        @click="openProfile(us.displayName)"
+        @click="openProfile(currentUser.displayName)"
       />
       <button @click="signOut">Выйти</button>
     </div>
-    <chat-window :messages="usersName" :currentUsername="us.displayName" />
+    <chat-window
+      :messages="usersName"
+      :currentUsername="currentUser.displayName"
+    />
     <hr />
-    <send-message-form :displayName="us.displayName" />
+    <send-message-form :displayName="currentUser.displayName" />
   </div>
 </template>
 
@@ -47,8 +50,7 @@ export default {
   },
 
   setup() {
-    const inputMessage = ref("");
-    const us = ref("");
+    const currentUser = ref("");
     const allImagesLoaded = ref(false);
 
     const { usersName } = getMessages();
@@ -101,7 +103,7 @@ export default {
     onMounted(() => {
       getCurrentUser()
         .then((user) => {
-          us.value = user;
+          currentUser.value = user;
         })
         .catch(() => {
           router.push({
@@ -111,9 +113,8 @@ export default {
     });
 
     return {
-      inputMessage,
       usersName,
-      us,
+      currentUser,
       allImagesLoaded,
       openProfile,
       signOut,
