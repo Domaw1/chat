@@ -125,8 +125,6 @@ export function getMessages() {
 
   const unsub = onSnapshot(doc(d, "messages", "Aruut"), (doc) => {
     usersName.value.push(doc.data());
-    console.log(doc.data());
-    console.log(usersName.value);
   });
 
   // const q = query(collection(d, "messages"));
