@@ -114,7 +114,7 @@ export default {
 
 .shrink {
   margin: 25px 15px 5px 15px;
-  background-color: aliceblue;
+  background-color: white;
   width: 800px;
 }
 
@@ -122,7 +122,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: aliceblue;
+  background-color: white;
   min-width: 100%;
 }
 

@@ -39,8 +39,9 @@
 </template>
 
 <script>
-import { ref, onUpdated } from "vue";
+import { ref, onUpdated, watch } from "vue";
 import UserAvatar from "./UserAvatar.vue";
+import { useRoute } from "vue-router";
 
 export default {
   name: "ChatWindow",
@@ -62,6 +63,12 @@ export default {
 
   setup(props) {
     const scrollToMe = ref(null);
+    const arr = ref([]);
+    arr.value = props.messages;
+
+    watch(arr, () => {
+      console.log(arr);
+    })
 
     onUpdated(() => {
       scrollToBottom();
@@ -77,6 +84,7 @@ export default {
 
     return {
       scrollToMe,
+      arr,
     };
   },
 };
@@ -84,7 +92,7 @@ export default {
 
 <style scoped>
 .chat {
-  background-color: aliceblue;
+  background-color: white;
   display: flex;
   flex-direction: column;
   flex: 1 1 100%;

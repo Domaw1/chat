@@ -26,7 +26,7 @@ export default {
           icon: "success",
         });
         router.push({
-          name: "login",
+          name: "dialogs",
         });
       }).catch(async (error) => {
         await Swal.fire({

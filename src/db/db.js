@@ -12,6 +12,7 @@ import {
   setDoc,
   arrayUnion,
   updateDoc,
+  where,
 } from "firebase/firestore";
 
 import {
@@ -118,6 +119,12 @@ export async function signInUser(email, password) {
     });
 
   return getSignIn;
+}
+
+export function getUserMessages() {
+  const unsub = onSnapshot(doc(d, "messages", "Aruut"), (doc) => {
+    console.log("Current data: ", doc.data());
+  });
 }
 
 export function getMessages() {

@@ -28,7 +28,7 @@ export default {
             icon: "success",
           });
           router.push({
-            name: "chat",
+            name: "dialogs",
           });
         }
       }).catch((error) => {
@@ -44,7 +44,7 @@ export default {
       getCurrentUser()
         .then(() => {
           router.push({
-            name: "chat",
+            name: "dialogs",
           });
         })
         .catch((error) => {

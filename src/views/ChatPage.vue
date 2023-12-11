@@ -12,13 +12,12 @@
       />
       <button @click="signOut">Выйти</button>
     </div>
-    <user-friends :friends="usersName" />
-    <!-- <chat-window
-      :messages="usersName"
+    <chat-window
+      :messages="message"
       :currentUsername="currentUser.displayName"
     />
     <hr />
-    <send-message-form :displayName="currentUser.displayName" /> -->
+    <send-message-form :displayName="currentUser.displayName" />
   </div>
 </template>
 
@@ -40,6 +39,7 @@ import SendMessageForm from "@/components/SendMessageForm.vue";
 import UserAvatar from "@/components/UserAvatar.vue";
 import UserFriends from "@/components/UserFriends.vue";
 import { useUserStore } from "@/store/user";
+import { useRoute } from 'vue-router';
 
 export default {
   name: "ChatPage",
@@ -52,17 +52,25 @@ export default {
     UserAvatar,
   },
 
-  setup() {
+  props: {
+    messages: {
+      type: Array,
+    },
+  },
+
+  setup(props) {
     const currentUser = ref("");
     const allImagesLoaded = ref(false);
+    const message = ref([]);
 
     const { usersName } = getMessages();
 
     const store = useUserStore();
     const { getUserByName, addUser } = store;
+    
+    message.value = store.messages;
 
-    watch(usersName, async () => {
-      console.log(usersName.value);
+    watch(message, async () => {
       // for (const user of usersName.value) {
       //   Object.keys(user).forEach(async (key) => {
       //     // users.value.push(key);
@@ -152,6 +160,7 @@ export default {
       usersName,
       currentUser,
       allImagesLoaded,
+      message,
       openProfile,
       signOut,
     };
@@ -174,12 +183,13 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ea526f;
+  background-color: white;
   height: 100vh;
 }
 
 .hat {
   display: flex;
+  background-color: #ea526f;
   width: 100%;
   height: 150px;
   margin-bottom: 20px;

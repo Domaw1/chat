@@ -8,18 +8,20 @@
       ></v-progress-circular>
     </div>
     <div v-if="allDialogs" class="messages">
-      <div v-for="friend in users" :key="friend" class="dialogs">
-        <user-avatar :photo="friend['photo']" />
-        <div class="dialog">
-          <div style="align-self: flex-start">
-            {{ friend.name }}
-          </div>
-          <div class="last-message">
-            <div>
-              {{ friend.lastMessage.content }}
+      <div v-for="friend in users" :key="friend">
+        <div class="dialogs" @click="openDialog(friend.mess)">
+          <user-avatar :photo="friend['photo']" />
+          <div class="dialog">
+            <div style="align-self: flex-start">
+              {{ friend.name }}
             </div>
-            <div style="margin-right: 10px">
-              {{ friend.lastMessage.time }}
+            <div class="last-message">
+              <div>
+                {{ friend.lastMessage.content }}
+              </div>
+              <div style="margin-right: 10px">
+                {{ friend.lastMessage.time }}
+              </div>
             </div>
           </div>
         </div>
@@ -34,6 +36,7 @@ import { getUserImage } from "@/db/db";
 import { useUserStore } from "@/store/user";
 import { ref, watch } from "vue";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
+import router from "@/router";
 
 const props = defineProps({
   friends: Array,
@@ -42,8 +45,15 @@ const props = defineProps({
 const users = ref([]);
 const store = useUserStore();
 const arr = props.friends;
-const allDialogs = ref(false)
-const { addUser, getUserByName } = store;
+const allDialogs = ref(false);
+const { addUser, getUserByName, setMessages } = store;
+
+const openDialog = (mess) => {
+  router.push({
+    name: "chat",
+  });
+  setMessages(mess);
+};
 
 watch(arr, () => {
   arr[0].messages.forEach(async (element) => {
@@ -56,12 +66,14 @@ watch(arr, () => {
           name: element.to,
           lastMessage: element.mess[element.mess.length - 1],
           photo: image,
+          mess: element.mess,
         });
       } else {
         users.value.push({
           name: element.to,
           lastMessage: element.mess[element.mess.length - 1],
           photo: userInStore.photo,
+          mess: element.mess,
         });
       }
     } catch (error) {
@@ -74,7 +86,9 @@ watch(arr, () => {
         users.value.push({
           name: element.to,
           lastMessage: element.mess[element.mess.length - 1],
-          photo: "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+          photo:
+            "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+          mess: element.mess,
         });
       }
     }
@@ -84,9 +98,9 @@ watch(arr, () => {
 </script>
 
 <style scoped>
-.messages, .spinner {
+.messages,
+.spinner {
   background-color: white;
-  height: 100vh;
   padding: 5px;
   text-align: center;
   position: absolute;
