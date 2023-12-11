@@ -20,6 +20,7 @@ const routes = [
     path: "/chat",
     name: "chat",
     component: ChatPage,
+    props: true,
   },
   {
     path: "/registration",

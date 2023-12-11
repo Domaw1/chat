@@ -8,8 +8,8 @@
       ></v-progress-circular>
     </div>
     <div v-if="allDialogs" class="messages">
-      <div v-for="friend in users" :key="friend">
-        <div class="dialogs" @click="openDialog(friend.mess)">
+      <div v-for="friend in friends" :key="friend">
+        <div class="dialogs" @click="openDialog(friend)">
           <user-avatar :photo="friend['photo']" />
           <div class="dialog">
             <div style="align-self: flex-start">
@@ -44,57 +44,59 @@ const props = defineProps({
 
 const users = ref([]);
 const store = useUserStore();
-const arr = props.friends;
-const allDialogs = ref(false);
+const arr = ref([]);
+arr.value = props.friends;
+
+const allDialogs = ref(true);
 const { addUser, getUserByName, setMessages } = store;
 
 const openDialog = (mess) => {
   router.push({
     name: "chat",
+    query: {
+      username: mess.name,
+    },
   });
-  setMessages(mess);
+  setMessages(mess.mess);
 };
 
-watch(arr, () => {
-  arr[0].messages.forEach(async (element) => {
-    const userInStore = getUserByName(element.to);
-    try {
-      if (!userInStore || !userInStore.photo) {
-        const image = await getUserImage(element.to);
-        addUser({ username: element.to, photo: image });
-        users.value.push({
-          name: element.to,
-          lastMessage: element.mess[element.mess.length - 1],
-          photo: image,
-          mess: element.mess,
-        });
-      } else {
-        users.value.push({
-          name: element.to,
-          lastMessage: element.mess[element.mess.length - 1],
-          photo: userInStore.photo,
-          mess: element.mess,
-        });
-      }
-    } catch (error) {
-      if (!userInStore || !userInStore.photo) {
-        addUser({
-          username: element.to,
-          photo:
-            "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-        });
-        users.value.push({
-          name: element.to,
-          lastMessage: element.mess[element.mess.length - 1],
-          photo:
-            "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-          mess: element.mess,
-        });
-      }
-    }
-  });
-  allDialogs.value = true;
-});
+// arr[0].messages.forEach(async (element) => {
+//   const userInStore = getUserByName(element.to);
+//   try {
+//     if (!userInStore || !userInStore.photo) {
+//       const image = await getUserImage(element.to);
+//       addUser({ username: element.to, photo: image });
+//       users.value.push({
+//         name: element.to,
+//         lastMessage: element.mess[element.mess.length - 1],
+//         photo: image,
+//         mess: element.mess,
+//       });
+//     } else {
+//       users.value.push({
+//         name: element.to,
+//         lastMessage: element.mess[element.mess.length - 1],
+//         photo: userInStore.photo,
+//         mess: element.mess,
+//       });
+//     }
+//   } catch (error) {
+//     if (!userInStore || !userInStore.photo) {
+//       addUser({
+//         username: element.to,
+//         photo:
+//           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+//       });
+//       users.value.push({
+//         name: element.to,
+//         lastMessage: element.mess[element.mess.length - 1],
+//         photo:
+//           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
+//         mess: element.mess,
+//       });
+//     }
+//   }
+// });
 </script>
 
 <style scoped>

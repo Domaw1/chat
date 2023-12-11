@@ -128,28 +128,31 @@ export function getUserMessages() {
 }
 
 export function getMessages() {
+  const messagesCollection = collection(d, "messages"); // Предполагается, что у вас есть коллекция "messages" в Firestore
+
   const usersName = ref([]);
-
-  const unsub = onSnapshot(doc(d, "messages", "Aruut"), (doc) => {
-    usersName.value.push(doc.data());
+  const unsubscribe = onSnapshot(messagesCollection, (querySnapshot) => {
+    usersName.value = querySnapshot.docs.map((doc) => doc.data());
   });
+  onUnmounted(unsubscribe);
 
-  // const q = query(collection(d, "messages"));
-  // const unsubscribe = onSnapshot(q, (snapshot) => {
-  //   const users = snapshot.docs.map((doc) => doc.data().messages);
-  //   usersName.value = Object.values(users).flat();
-  //   console.log(usersName.value.value);
+  return { usersName };
+
+  // const unsub = onSnapshot(doc(d, "messages", "Aruut"), (doc) => {
+  //   usersName.value.push(doc.data());
+  // });
+  // const unsub = onSnapshot(collection(d, "messages"), (snapshot) => {
+  //   usersName.value = []; // Очищаем текущий массив перед добавлением новых данных
+  //   snapshot.forEach((doc) => {
+  //     usersName.value.push(doc.data());
+  //   });
   // });
 
-  // onUnmounted(unsubscribe);
-
-  onUnmounted(unsub);
   return { usersName };
 }
 
-export async function sendMessageToFirestore(user) {
-  const d = getFirestore(app);
-  const usersRef = doc(d, "messages", "userMessages");
+export async function sendMessageToFirestore(user, toUser) {
+  const usersRef = doc(d, "messages", user.displayName);
   const docSnap = await getDoc(usersRef);
   const currentMessage = {
     displayName: user.displayName,
@@ -159,11 +162,11 @@ export async function sendMessageToFirestore(user) {
 
   if (docSnap.exists()) {
     await updateDoc(usersRef, {
-      messages: arrayUnion(currentMessage),
+      [toUser]: arrayUnion(currentMessage),
     });
   } else {
     await setDoc(usersRef, {
-      messages: arrayUnion(currentMessage),
+      [toUser]: arrayUnion(currentMessage),
     });
   }
 }

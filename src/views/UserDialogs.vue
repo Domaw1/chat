@@ -9,23 +9,54 @@
       />
       <button @click="signOut">Выйти</button>
     </div>
-    <user-friends :friends="usersName" />
-  </div>
+    <user-friends :friends="users" />
+    <!-- <div class="messages">
+      <div v-for="friend in users" :key="friend">
+        <div class="dialogs" @click="openDialog(friend)">
+          <user-avatar :photo="friend['photo']" />
+          <div class="dialog">
+            <div style="align-self: flex-start">
+              {{ friend.name }}
+            </div>
+            <div class="last-message">
+              <div>
+                {{ friend.lastMessage.content }}
+              </div>
+              <div style="margin-right: 10px">
+                {{ friend.lastMessage.time }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div> -->
+</div> 
 </template>
 
 <script setup>
 import UserFriends from "@/components/UserFriends.vue";
 import UserAvatar from "@/components/UserAvatar.vue";
-import { ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { getCurrentUser, signOutUser, getMessages } from "@/db/db";
 import router from "@/router";
 
-const props = defineProps({
-  friends: Array,
-});
-
 const { usersName } = getMessages();
+const users = ref([]);
 const currentUser = ref({});
+
+watch(
+  usersName,
+  () => {
+    Object.keys(usersName.value[0]).forEach(user => {
+      const message = {
+        name: user,
+        lastMessage: usersName.value[0][user][usersName.value[0][user].length - 1],
+      };
+      users.value.push(message);
+    })
+  },
+  { deep: true }
+);
 
 const openProfile = (username) => {
   router.push({
@@ -43,15 +74,15 @@ const signOut = () => {
   });
 };
 
-getCurrentUser()
-  .then((user) => {
-    currentUser.value = user;
-  })
-  .catch(() => {
+onMounted(async () => {
+  try {
+    currentUser.value = await getCurrentUser();
+  } catch (error) {
     router.push({
       name: "login",
     });
-  });
+  }
+});
 </script>
 
 <style scoped>

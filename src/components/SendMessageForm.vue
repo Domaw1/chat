@@ -60,6 +60,10 @@ export default {
     displayName: {
       type: String,
     },
+
+    toUser: {
+      type: String,
+    }
   },
 
   setup(props) {
@@ -88,7 +92,7 @@ export default {
           content: message,
           time: hours,
         };
-        sendMessageToFirestore(currentMessage);
+        sendMessageToFirestore(currentMessage, props.toUser);
         inputMessage.value = "";
         isEmojiOpen.value = false;
       }
