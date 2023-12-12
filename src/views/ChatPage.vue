@@ -17,7 +17,7 @@
       :currentUsername="currentUser.displayName"
     />
     <hr />
-    <send-message-form :displayName="currentUser.displayName" :toUser="to"/>
+    <send-message-form :displayName="currentUser.displayName" :toUser="to" />
   </div>
 </template>
 
@@ -33,12 +33,10 @@ import {
 import ChatWindow from "@/components/ChatWindow.vue";
 import SendMessageForm from "@/components/SendMessageForm.vue";
 import UserAvatar from "@/components/UserAvatar.vue";
-import UserFriends from "@/components/UserFriends.vue";
 import { useUserStore } from "@/store/user";
 import { useRoute } from "vue-router";
 
 const currentUser = ref("");
-const allImagesLoaded = ref(false);
 const message = ref([]);
 
 const route = useRoute();
@@ -46,75 +44,18 @@ const to = route.query.username;
 const { usersName } = getMessages();
 
 const store = useUserStore();
-const { getUserByName, addUser } = store;
 
 watch(
   usersName,
   () => {
     Object.keys(usersName.value[0]).forEach((key) => {
-      if(to === key) {
-        message.value = usersName.value[0][key]
+      if (to === key) {
+        message.value = usersName.value[0][key];
       }
-    })
+    });
   },
   { deep: true }
 );
-
-// for (const user of usersName.value) {
-//   Object.keys(user).forEach(async (key) => {
-//     // users.value.push(key);
-//     const userInStore = getUserByName(key);
-//     try {
-//       if (!userInStore || !userInStore.photo) {
-//         const image = await getUserImage(key);
-//         addUser({ username: key, photo: image });
-//         user[key].photo = image;
-//         //   user.photo = image;
-//       } else {
-//         //   user.photo = userInStore.photo;
-//         user[key].photo = userInStore.photo;
-//       }
-//     } catch (error) {
-//       if (!userInStore || !userInStore.photo) {
-//         addUser({
-//           username: key,
-//           photo:
-//             "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-//         });
-//         user[key].photo =
-//           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
-//       }
-//     }
-//   });
-// }
-// allImagesLoaded.value = true;
-
-// watch(usersName, async () => {
-//   console.log(usersName.value);
-//   for (const user of usersName.value) {
-//     const userInStore = getUserByName(user.displayName);
-//     try {
-//       if (!userInStore || !userInStore.photo) {
-//         const image = await getUserImage(user.displayName);
-//         addUser({ username: user.displayName, photo: image });
-//         user.photo = image;
-//       } else {
-//         user.photo = userInStore.photo;
-//       }
-//     } catch (error) {
-//       if (!userInStore || !userInStore.photo) {
-//         addUser({
-//           username: user.displayName,
-//           photo:
-//             "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-//         });
-//         user.photo =
-//           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg";
-//       }
-//     }
-//   }
-//   allImagesLoaded.value = true;
-// });
 
 const signOut = () => {
   signOutUser();
@@ -142,7 +83,6 @@ onMounted(() => {
         name: "login",
       });
     });
-
 });
 </script>
 

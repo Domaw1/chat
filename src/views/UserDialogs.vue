@@ -1,35 +1,16 @@
 <template>
-  <div>
+  <div class="main">
     <div class="hat" @click="openProfile(currentUser.displayName)">
-      <h1>Добро пожаловать, {{ currentUser.displayName }}</h1>
+      <h1 style="align-self: flex-end;">Добро пожаловать, {{ currentUser.displayName }}</h1>
       <user-avatar
         :photo="currentUser.photoURL"
         alt="user avatar"
         class="user-avatar"
+        style="align-self: flex-end;"
       />
       <button @click="signOut">Выйти</button>
     </div>
     <user-friends :friends="users" />
-    <!-- <div class="messages">
-      <div v-for="friend in users" :key="friend">
-        <div class="dialogs" @click="openDialog(friend)">
-          <user-avatar :photo="friend['photo']" />
-          <div class="dialog">
-            <div style="align-self: flex-start">
-              {{ friend.name }}
-            </div>
-            <div class="last-message">
-              <div>
-                {{ friend.lastMessage.content }}
-              </div>
-              <div style="margin-right: 10px">
-                {{ friend.lastMessage.time }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-  </div> -->
 </div> 
 </template>
 
@@ -107,5 +88,13 @@ onMounted(async () => {
   font-size: 18px;
   margin-bottom: 10px;
   text-align: right;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: white;
+  height: 100vh;
 }
 </style>

@@ -49,11 +49,6 @@ export default {
     };
 
     const changeProfile = async (propertiesToUpdate) => {
-      // updateUser(
-      //   currentUser.value,
-      //   propertiesToUpdate.value.name,
-      //   propertiesToUpdate.value.email
-      // );
       if (propertiesToUpdate.value.photo[0]) {
         createUserImage(
           propertiesToUpdate.value.photo[0],

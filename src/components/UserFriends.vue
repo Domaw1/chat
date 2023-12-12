@@ -7,7 +7,7 @@
         color="red"
       ></v-progress-circular>
     </div>
-    <div v-if="allDialogs" class="messages">
+    <div class="messages">
       <div v-for="friend in friends" :key="friend">
         <div class="dialogs" @click="openDialog(friend)">
           <user-avatar :photo="friend['photo']" />
@@ -32,9 +32,8 @@
 
 <script setup>
 import UserAvatar from "./UserAvatar.vue";
-import { getUserImage } from "@/db/db";
 import { useUserStore } from "@/store/user";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { VProgressCircular } from "vuetify/lib/components/index.mjs";
 import router from "@/router";
 
@@ -42,13 +41,11 @@ const props = defineProps({
   friends: Array,
 });
 
-const users = ref([]);
 const store = useUserStore();
 const arr = ref([]);
 arr.value = props.friends;
 
-const allDialogs = ref(true);
-const { addUser, getUserByName, setMessages } = store;
+const { setMessages } = store;
 
 const openDialog = (mess) => {
   router.push({
@@ -59,44 +56,6 @@ const openDialog = (mess) => {
   });
   setMessages(mess.mess);
 };
-
-// arr[0].messages.forEach(async (element) => {
-//   const userInStore = getUserByName(element.to);
-//   try {
-//     if (!userInStore || !userInStore.photo) {
-//       const image = await getUserImage(element.to);
-//       addUser({ username: element.to, photo: image });
-//       users.value.push({
-//         name: element.to,
-//         lastMessage: element.mess[element.mess.length - 1],
-//         photo: image,
-//         mess: element.mess,
-//       });
-//     } else {
-//       users.value.push({
-//         name: element.to,
-//         lastMessage: element.mess[element.mess.length - 1],
-//         photo: userInStore.photo,
-//         mess: element.mess,
-//       });
-//     }
-//   } catch (error) {
-//     if (!userInStore || !userInStore.photo) {
-//       addUser({
-//         username: element.to,
-//         photo:
-//           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-//       });
-//       users.value.push({
-//         name: element.to,
-//         lastMessage: element.mess[element.mess.length - 1],
-//         photo:
-//           "https://i.pinimg.com/736x/cb/45/72/cb4572f19ab7505d552206ed5dfb3739.jpg",
-//         mess: element.mess,
-//       });
-//     }
-//   }
-// });
 </script>
 
 <style scoped>
